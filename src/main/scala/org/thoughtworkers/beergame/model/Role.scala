@@ -1,8 +1,8 @@
 package org.thoughtworkers.beergame.model
 
 class Role(_name: String) {
-	var _downstream: Role = null
-	var _upstream: Role = null
+	private var _downstream: Role = null
+	private var _upstream: Role = null
 	
 	val name = _name
 	
