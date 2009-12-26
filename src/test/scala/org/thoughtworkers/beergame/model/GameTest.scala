@@ -33,6 +33,29 @@ class GameTest extends TestCase("game") {
 	}
 	
 	def test_place_and_handle_order() {
-		// TODO: write test here
+		consumer.placeOrder(4)
+		assertEquals(1, consumer.placedOrders.size)
+		assertEquals(0, retailer.incomingOrders.size)
+		assertEquals(12, consumer.inventory)
+		assertEquals(12, retailer.inventory)
+		
+		game.passAWeek
+		game.passAWeek
+		assertEquals(1, retailer.incomingOrders.size)
+		assertEquals(1, retailer.outgoingShips.size)
+		assertEquals(0, consumer.incomingShips.size)
+		
+		val order = retailer.incomingOrders.first
+		assertEquals(2, order.atWeek)
+		assertEquals(4, order.amount)
+		
+		assertEquals(12, consumer.inventory)
+		assertEquals(8, retailer.inventory)
+		
+		game.passAWeek
+		game.passAWeek
+		assertEquals(16, consumer.inventory)
+		assertEquals(8, retailer.inventory)
+		assertEquals(1, consumer.incomingShips.size)
 	}
 }

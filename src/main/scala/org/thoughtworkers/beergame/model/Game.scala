@@ -15,8 +15,11 @@ class Game(_name: String) {
 	
 	def currentWeek = _currentWeek
 	
-	def passAWeek() {
+	def passAWeek {
 		_currentWeek = _currentWeek + 1
+		for(role <- _roles) {
+			role.update
+		}
 	}
 	
 	def roleCount = _roles.size
