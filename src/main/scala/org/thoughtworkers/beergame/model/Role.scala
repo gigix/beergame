@@ -2,10 +2,14 @@ package org.thoughtworkers.beergame.model
 
 import scala.collection.jcl.ArrayList
 
-class Role(_name: String) {
+class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
+	def this(name: String) {
+		this(name, 2, 2)
+	}
+	
 	val name = _name
-	private val informationDelay = 2
-	private val shippingDelay = 2
+	private val informationDelay = _informationDelay
+	private val shippingDelay = _shippingDelay
 	
 	private var _game: Game = null
 	private var _downstream: Role = null
@@ -36,6 +40,10 @@ class Role(_name: String) {
 		_game = game
 	}
 	
+	def setInventory(inventory: Int) {
+		_inventory = inventory
+	}
+	
 	def update {
 		for(order <- _inbox.clone) {
 			if(order.atWeek == currentWeek - informationDelay) {
@@ -53,7 +61,7 @@ class Role(_name: String) {
 	def placeOrder(amount: Int) {
 		val placedOrder = new Order(currentWeek, amount)
 		_placedOrders.add(placedOrder)
-		_upstream.receiveOrder(placedOrder)
+		_upstream._inbox.add(placedOrder)
 	}
 	
 	def placedOrders = _placedOrders.clone
@@ -63,10 +71,6 @@ class Role(_name: String) {
 	
 	private def setDownstream(role: Role) {
 		_downstream = role
-	}
-	
-	private def receiveOrder(order: Order) {
-		_inbox.add(order)
 	}
 	
 	private def handleIncomingOrder(order: Order) {

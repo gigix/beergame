@@ -58,4 +58,15 @@ class GameTest extends TestCase("game") {
 		assertEquals(8, retailer.inventory)
 		assertEquals(1, consumer.incomingShips.size)
 	}
+	
+	def test_build_a_standard_game() {
+		val playerRoles = Array("Retailer", "Wholesaler", "Distributor", "Factory")
+		val game = Game.build("A Standard Game", playerRoles)
+		
+		assertEquals(6, game.roleCount)
+	}
+	
+	def test_each_role_can_place_order_only_once_per_week() {
+		
+	}	
 }

@@ -26,8 +26,4 @@ class RoleTest extends TestCase("role") {
 		assertEquals(consumer.upstream, retailer)
 		assertEquals(wholesaler.downstream, retailer)
 	}
-
-	def test_place_orders() {
-		// consumer.placeOrder(4)
-	}
 }
