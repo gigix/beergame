@@ -25,11 +25,14 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 	private val _outgoingShips = new ArrayList[Order]
 	private val _incomingShips = new ArrayList[Order]
 	
+	private var _hasPlacedOrder = false
+	
 	def downstream = _downstream
 	def upstream = _upstream
 	def game = _game
 	def currentWeek = _game.currentWeek
 	def inventory = _inventory
+	def hasPlacedOrder = _hasPlacedOrder
 	
 	def setUpstream(role: Role) {
 		_upstream = role
@@ -45,6 +48,8 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 	}
 	
 	def update {
+		_hasPlacedOrder = false
+		
 		for(order <- _inbox.clone) {
 			if(order.atWeek == currentWeek - informationDelay) {
 				handleIncomingOrder(order)
@@ -59,9 +64,15 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 	}
 	
 	def placeOrder(amount: Int) {
+		if(hasPlacedOrder) {
+			return
+		}
+		
 		val placedOrder = new Order(currentWeek, amount)
 		_placedOrders.add(placedOrder)
 		_upstream._inbox.add(placedOrder)
+		
+		_hasPlacedOrder = true
 	}
 	
 	def placedOrders = _placedOrders.clone

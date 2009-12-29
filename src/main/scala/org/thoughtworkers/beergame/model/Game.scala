@@ -3,7 +3,9 @@ package org.thoughtworkers.beergame.model
 import scala.collection.jcl.ArrayList
 
 object Game {
-	def all = "All Games Here"
+	private val _allGames = new ArrayList[Game]()
+	
+	def all = _allGames
 	
 	def build(name: String, playerRoleNames: Array[String]) = {
 		val game = new Game(name)
@@ -24,6 +26,7 @@ object Game {
 		currentRole.setUpstream(brewery)
 		game.addRole(brewery)
 		
+		_allGames.add(game)
 		game
 	}
 }

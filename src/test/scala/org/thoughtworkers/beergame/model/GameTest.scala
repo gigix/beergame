@@ -67,6 +67,20 @@ class GameTest extends TestCase("game") {
 	}
 	
 	def test_each_role_can_place_order_only_once_per_week() {
+		consumer.placeOrder(4)
+		assert(consumer.hasPlacedOrder)
+		consumer.placeOrder(4)
+		assertEquals(1, consumer.placedOrders.size)
+		assertEquals(4, consumer.placedOrders.first.amount)
 		
+		game.passAWeek
+		consumer.placeOrder(4)
+		assertEquals(2, consumer.placedOrders.size)
 	}	
+	
+	def test_list_all_games() {
+		assertEquals(0, Game.all.size)
+		Game.build("A Standard Game", Array("Retailer", "Wholesaler", "Distributor", "Factory"))
+		assertEquals(1, Game.all.size)
+	}
 }
