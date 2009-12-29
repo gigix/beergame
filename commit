@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+git pull . && \
+mvn clean test && \
+git commit -a && \
+git push
