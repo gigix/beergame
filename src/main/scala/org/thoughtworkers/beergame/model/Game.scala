@@ -1,5 +1,6 @@
 package org.thoughtworkers.beergame.model
 
+import java.io.File
 import scala.collection.jcl.ArrayList
 
 object Game {
@@ -52,4 +53,9 @@ class Game(_name: String) {
 	}
 	
 	def roleCount = _roles.size	
+	
+	def save {
+		val persistentDir = new File("games")
+		persistentDir.mkdirs
+	}
 }

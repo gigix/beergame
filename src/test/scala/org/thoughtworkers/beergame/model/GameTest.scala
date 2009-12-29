@@ -3,6 +3,9 @@ package org.thoughtworkers.beergame.model
 import _root_.junit.framework._
 import Assert._
 
+import java.io.File
+import scala.io.Source
+
 class GameTest extends TestCase("game") {
 	val consumer = new Role("Consumer")
 	val retailer = new Role("Retailer")
@@ -17,6 +20,11 @@ class GameTest extends TestCase("game") {
 		for(role <- allRoles) {
 			game.addRole(role)
 		}
+	}
+	
+	override def tearDown() {
+		val persistentDir = new File("games")
+		persistentDir.delete
 	}
 	
 	def test_create_game_with_roles() {
@@ -82,5 +90,11 @@ class GameTest extends TestCase("game") {
 		assertEquals(0, Game.all.size)
 		Game.build("A Standard Game", Array("Retailer", "Wholesaler", "Distributor", "Factory"))
 		assertEquals(1, Game.all.size)
+	}
+	
+	def test_save_game_to_file() {
+		game.save
+		// val targetFile = Source.fromFile(new File("games/test_beer_game.yml"))
+		// assert(targetFile.hasNext)
 	}
 }
