@@ -3,6 +3,8 @@ package org.thoughtworkers.beergame.model
 import scala.collection.jcl.ArrayList
 
 object Game {
+	def all = "All Games Here"
+	
 	def build(name: String, playerRoleNames: Array[String]) = {
 		val game = new Game(name)
 		
@@ -46,5 +48,5 @@ class Game(_name: String) {
 		}
 	}
 	
-	def roleCount = _roles.size
+	def roleCount = _roles.size	
 }
