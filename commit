@@ -3,4 +3,5 @@
 git pull . && \
 mvn clean test && \
 git commit -a && \
-git push
+git push && \
+git status
