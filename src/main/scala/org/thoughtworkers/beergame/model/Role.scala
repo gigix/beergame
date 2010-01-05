@@ -57,7 +57,13 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 	def downstream = _downstream
 	def upstream = _upstream
 	def game = _game
-	def currentWeek = _game.currentWeek
+	def currentWeek = {
+		if(_game == null) {
+			null
+		} else {
+			_game.currentWeek
+		}
+	}
 	def inventory = _inventory
 	def hasPlacedOrder = _hasPlacedOrder
 	

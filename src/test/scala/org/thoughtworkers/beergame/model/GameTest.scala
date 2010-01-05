@@ -27,9 +27,9 @@ class GameTest extends TestCase("game") {
 	}
 	
 	def test_record_game_time() {
-		assertEquals(0, retailer.currentWeek)
+		assertEquals(0, retailer.currentWeek.is)
 		game.passAWeek
-		assertEquals(1, retailer.currentWeek)
+		assertEquals(1, retailer.currentWeek.is)
 	}
 	
 	def test_place_and_handle_order() {
@@ -63,6 +63,7 @@ class GameTest extends TestCase("game") {
 		val playerRoles = Array("Retailer", "Wholesaler", "Distributor", "Factory")
 		val game = Game.build("A Standard Game", playerRoles)
 		
+		assertEquals("A Standard Game", game.name.is)
 		assertEquals(6, game.roleCount)
 	}
 	

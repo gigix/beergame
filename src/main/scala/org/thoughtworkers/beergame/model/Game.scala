@@ -13,7 +13,7 @@ object Game extends Game with LongKeyedMetaMapper[Game] {
 	
 	def build(name: String, playerRoleNames: Array[String]) = {
 		val game = new Game
-		game.setName(name)
+		game.name.set(name)
 		
 		val consumer = Role.build("Consumer")		
 		game.addRole(consumer)
@@ -39,24 +39,27 @@ object Game extends Game with LongKeyedMetaMapper[Game] {
 class Game extends LongKeyedMapper[Game] with IdPK {
 	def getSingleton = Game
 	
-	private var _name: String = null
-	def name = _name
-	def setName(name: String) {
-		_name = name
+	// object done extends MappedBoolean(this) 
+	// 	 object owner extends MappedLongForeignKey(this, User) 
+	// 	 object priority extends MappedInt(this) { 
+	// 	   override def defaultValue = 5 
+	// 	 } 
+	// 	 object desc extends MappedPoliteString(this, 128)
+	
+	object name extends MappedPoliteString(this, 128)
+	object currentWeek extends MappedInt(this) {
+		override def defaultValue = 0
 	}
-
+	
 	private val _roles = new ArrayList[Role]()
-	private var _currentWeek = 0
 	
 	def addRole(role: Role) {
 		_roles.add(role)
 		role.setGame(this)
-	}
-	
-	def currentWeek = _currentWeek
+	}	
 	
 	def passAWeek {
-		_currentWeek = _currentWeek + 1
+		currentWeek.set(currentWeek + 1)
 		for(role <- _roles) {
 			role.update
 		}

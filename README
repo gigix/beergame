@@ -1,0 +1,7 @@
+We try to build an online version of The Beer Game with Scala.
+
+http://en.wikipedia.org/wiki/Beer_distribution_game
+
+The Beer Distribution Game (The Beer Game) is a simulation game created by a group of professors at MIT Sloan School of Management in early 1960s to demonstrate a number of key principles of supply chain management. The game is played by teams of at least four players, often in heated competition, and takes from one to one and a half hours to complete. A debriefing session of roughly equivalent length typically follows to review the results of each team and discuss the lessons involved.
+
+The purpose of the game is to meet customer demand for cases of beer through a multi-stage supply chain with minimal expenditure on back orders and inventory. Players can see each other's inventory but only one player sees actual customer demand. Verbal communication between players is against the rules so feelings of confusion and disappointment are common. Players look to one another within their supply chain frantically trying to figure out where things are going wrong. Most of the players feel frustrated because they are not getting the results they want. Players wonder whether someone in their team did not understand the game or assume customer demand is following a very erratic pattern as backlogs mount and/or massive inventories accumulate. During the debriefing, it is explained that these feelings are common and that reactions based on these feelings within supply chains create the bullwhip effect.
