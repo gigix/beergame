@@ -90,11 +90,5 @@ class GameTest extends TestCase("game") {
 		assertEquals(0, Game.all.size)
 		Game.build("A Standard Game", Array("Retailer", "Wholesaler", "Distributor", "Factory"))
 		assertEquals(1, Game.all.size)
-	}
-	
-	def test_save_game_to_file() {
-		game.save
-		// val targetFile = Source.fromFile(new File("games/test_beer_game.yml"))
-		// assert(targetFile.hasNext)
-	}
+	}	
 }
