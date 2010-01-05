@@ -7,11 +7,11 @@ import java.io.File
 import scala.io.Source
 
 class GameTest extends TestCase("game") {
-	val consumer = new Role("Consumer")
-	val retailer = new Role("Retailer")
-	val wholesaler = new Role("Wholesaler")
+	val consumer = Role.build("Consumer")
+	val retailer = Role.build("Retailer")
+	val wholesaler = Role.build("Wholesaler")
 	val allRoles = Array(consumer, retailer, wholesaler)
-	val game = new Game("Test Beer Game")
+	val game = new Game
 	
 	override def setUp() {
 		retailer.setUpstream(wholesaler)

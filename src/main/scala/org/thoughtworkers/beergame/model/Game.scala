@@ -1,28 +1,32 @@
 package org.thoughtworkers.beergame.model
 
+import net.liftweb._ 
+import mapper._ 
+
 import java.io.File
 import scala.collection.jcl.ArrayList
 
-object Game {
+object Game extends Game with LongKeyedMetaMapper[Game] {
 	private val _allGames = new ArrayList[Game]()
 	
 	def all = _allGames
 	
 	def build(name: String, playerRoleNames: Array[String]) = {
-		val game = new Game(name)
+		val game = new Game
+		game.setName(name)
 		
-		val consumer = new Role("Consumer")		
+		val consumer = Role.build("Consumer")		
 		game.addRole(consumer)
 		
 		var currentRole = consumer
 		for(roleName <- playerRoleNames) {
-			val role = new Role(roleName)
+			val role = Role.build(roleName)
 			game.addRole(role)			
 			currentRole.setUpstream(role)
 			currentRole = role
 		}
 		
-		val brewery = new Role("Brewery", 1, 1)
+		val brewery = Role.build("Brewery", 1, 1)
 		brewery.setInventory(Math.POS_INF_FLOAT.toInt)
 		currentRole.setUpstream(brewery)
 		game.addRole(brewery)
@@ -32,8 +36,14 @@ object Game {
 	}
 }
 
-class Game(_name: String) {
-	val name = _name
+class Game extends LongKeyedMapper[Game] with IdPK {
+	def getSingleton = Game
+	
+	private var _name: String = null
+	def name = _name
+	def setName(name: String) {
+		_name = name
+	}
 
 	private val _roles = new ArrayList[Role]()
 	private var _currentWeek = 0

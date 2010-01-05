@@ -1,15 +1,42 @@
 package org.thoughtworkers.beergame.model
 
+import net.liftweb._ 
+import mapper._ 
+
 import scala.collection.jcl.ArrayList
 
-class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
-	def this(name: String) {
-		this(name, 2, 2)
+object Role extends Role with LongKeyedMetaMapper[Role] {
+	def build(name: String, informationDelay: Int, shippingDelay: Int) = {
+		val role = new Role()
+		role.setName(name)
+		role.setInformationDelay(informationDelay)
+		role.setShippingDelay(shippingDelay)
+		role
 	}
 	
-	val name = _name
-	private val informationDelay = _informationDelay
-	private val shippingDelay = _shippingDelay
+	def build(name: String): Role = build(name, 2, 2)
+}
+
+class Role extends LongKeyedMapper[Role] with IdPK {
+	def getSingleton = Role
+	
+	private var _name:String = null
+	def setName(name:String) {
+		_name = name
+	}
+	def name = _name
+	
+	private var _informationDelay:Int = 0
+	def setInformationDelay(informationDelay:Int) {
+		_informationDelay = informationDelay
+	}
+	def informationDelay = _informationDelay
+	
+	private var _shippingDelay:Int = 0
+	def setShippingDelay(shippingDelay:Int) {
+		_shippingDelay = shippingDelay
+	}
+	def shippingDelay = _shippingDelay
 	
 	private var _game: Game = null
 	private var _downstream: Role = null
@@ -68,7 +95,7 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 			return
 		}
 		
-		val placedOrder = new Order(currentWeek, amount)
+		val placedOrder = Order.build(currentWeek, amount)
 		_placedOrders.add(placedOrder)
 		_upstream._inbox.add(placedOrder)
 		
@@ -85,7 +112,7 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 	}
 	
 	private def handleIncomingOrder(order: Order) {
-		val incomingOrder = new Order(currentWeek, order.amount)
+		val incomingOrder = Order.build(currentWeek, order.amount)
 		_incomingOrders.add(incomingOrder)
 		_inbox.remove(order)
 		
@@ -96,7 +123,7 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 		}
 		_inventory -= requestedAmount				
 
-		val shippedOrder = new Order(currentWeek, shippedAmount)
+		val shippedOrder = Order.build(currentWeek, shippedAmount)
 		_outgoingShips.add(shippedOrder)			
 		_downstream._logistics.add(shippedOrder)
 	}
