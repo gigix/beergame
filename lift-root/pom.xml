@@ -73,6 +73,13 @@
       <version>${scala.version}</version>
       <scope>test</scope>
     </dependency>
+
+	<dependency>
+	  <groupId>mysql</groupId>
+	  <artifactId>mysql-connector-java</artifactId>
+	  <version>5.0.8</version>
+	</dependency>
+
   </dependencies>
 
   <build>
