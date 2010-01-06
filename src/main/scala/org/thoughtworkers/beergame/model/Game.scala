@@ -27,7 +27,7 @@ object Game extends Game with LongKeyedMetaMapper[Game] {
 		}
 		
 		val brewery = Role.build("Brewery", 1, 1)
-		brewery.setInventory(Math.POS_INF_FLOAT.toInt)
+		brewery.inventory.set(Math.POS_INF_FLOAT.toInt)
 		currentRole.setUpstream(brewery)
 		game.addRole(brewery)
 		

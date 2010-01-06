@@ -8,9 +8,9 @@ import scala.collection.jcl.ArrayList
 object Role extends Role with LongKeyedMetaMapper[Role] {
 	def build(name: String, informationDelay: Int, shippingDelay: Int) = {
 		val role = new Role()
-		role.setName(name)
-		role.setInformationDelay(informationDelay)
-		role.setShippingDelay(shippingDelay)
+		role.name.set(name)
+		role.informationDelay.set(informationDelay)
+		role.shippingDelay.set(shippingDelay)
 		role
 	}
 	
@@ -20,29 +20,25 @@ object Role extends Role with LongKeyedMetaMapper[Role] {
 class Role extends LongKeyedMapper[Role] with IdPK {
 	def getSingleton = Role
 	
-	private var _name:String = null
-	def setName(name:String) {
-		_name = name
-	}
-	def name = _name
+	// object done extends MappedBoolean(this) 
+	// 	 object owner extends MappedLongForeignKey(this, User) 
 	
-	private var _informationDelay:Int = 0
-	def setInformationDelay(informationDelay:Int) {
-		_informationDelay = informationDelay
+	object name extends MappedPoliteString(this, 128)
+	object informationDelay extends MappedInt(this)	
+	object shippingDelay extends MappedInt(this)
+	object inventory extends MappedInt(this) {
+		override def defaultValue = 12
 	}
-	def informationDelay = _informationDelay
 	
-	private var _shippingDelay:Int = 0
-	def setShippingDelay(shippingDelay:Int) {
-		_shippingDelay = shippingDelay
-	}
-	def shippingDelay = _shippingDelay
-	
+	object hasPlacedOrder extends MappedBoolean(this)
+	def hasPlacedOrder_? = hasPlacedOrder.is
+
+	// object game extends MappedLongForeignKey(this, Game)
 	private var _game: Game = null
+	def game = _game
+	
 	private var _downstream: Role = null
 	private var _upstream: Role = null
-	
-	private var _inventory = 12
 	
 	private val _inbox = new ArrayList[Order]
 	private val _logistics = new ArrayList[Order]
@@ -52,11 +48,9 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 	private val _outgoingShips = new ArrayList[Order]
 	private val _incomingShips = new ArrayList[Order]
 	
-	private var _hasPlacedOrder = false
-	
 	def downstream = _downstream
 	def upstream = _upstream
-	def game = _game
+	
 	def currentWeek = {
 		if(_game == null) {
 			null
@@ -64,8 +58,6 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 			_game.currentWeek
 		}
 	}
-	def inventory = _inventory
-	def hasPlacedOrder = _hasPlacedOrder
 	
 	def setUpstream(role: Role) {
 		_upstream = role
@@ -76,28 +68,24 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 		_game = game
 	}
 	
-	def setInventory(inventory: Int) {
-		_inventory = inventory
-	}
-	
 	def update {
-		_hasPlacedOrder = false
+		hasPlacedOrder.set(false)
 		
 		for(order <- _inbox.clone) {
-			if(order.atWeek == currentWeek - informationDelay) {
+			if(order.atWeek == currentWeek - informationDelay.is) {
 				handleIncomingOrder(order)
 			}
 		}
 		
 		for(ship <- _logistics.clone) {
-			if(ship.atWeek == currentWeek - shippingDelay) {
+			if(ship.atWeek == currentWeek - shippingDelay.is) {
 				handleIncomingShip(ship)
 			}
 		}
 	}
 	
 	def placeOrder(amount: Int) {
-		if(hasPlacedOrder) {
+		if(hasPlacedOrder_?) {
 			return
 		}
 		
@@ -105,7 +93,7 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 		_placedOrders.add(placedOrder)
 		_upstream._inbox.add(placedOrder)
 		
-		_hasPlacedOrder = true
+		hasPlacedOrder.set(true)
 	}
 	
 	def placedOrders = _placedOrders.clone
@@ -124,10 +112,10 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 		
 		val requestedAmount = incomingOrder.amount
 		var shippedAmount = requestedAmount
-		if(_inventory < requestedAmount) {
-			shippedAmount = _inventory
+		if(inventory.is < requestedAmount) {
+			shippedAmount = inventory.is
 		}
-		_inventory -= requestedAmount				
+		inventory.set(inventory - requestedAmount)
 
 		val shippedOrder = Order.build(currentWeek, shippedAmount)
 		_outgoingShips.add(shippedOrder)			
@@ -135,7 +123,7 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 	}
 	
 	private def handleIncomingShip(ship: Order) {
-		_inventory += ship.amount
+		inventory.set(inventory + ship.amount)
 		_incomingShips.add(ship)
 		_logistics.remove(ship)
 	}
