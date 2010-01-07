@@ -16,7 +16,7 @@ class RoleTest extends TestCase("role") {
 	def test_create_role_with_name() {
 		val retailer = Role.build("Retailer")
 		assertTrue(retailer != null)
-		assertEquals("Retailer", retailer.name.is)
+		assertEquals("Retailer", retailer.name)
 	}
 	
 	def test_associate_downstream_and_upstream_roles() {

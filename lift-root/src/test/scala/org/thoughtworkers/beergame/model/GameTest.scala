@@ -36,8 +36,8 @@ class GameTest extends TestCase("game") {
 		consumer.placeOrder(4)
 		assertEquals(1, consumer.placedOrders.size)
 		assertEquals(0, retailer.incomingOrders.size)
-		assertEquals(12, consumer.inventory.is)
-		assertEquals(12, retailer.inventory.is)
+		assertEquals(12, consumer.inventory)
+		assertEquals(12, retailer.inventory)
 		
 		game.passAWeek
 		game.passAWeek
@@ -49,13 +49,13 @@ class GameTest extends TestCase("game") {
 		assertEquals(2, order.atWeek)
 		assertEquals(4, order.amount)
 		
-		assertEquals(12, consumer.inventory.is)
-		assertEquals(8, retailer.inventory.is)
+		assertEquals(12, consumer.inventory)
+		assertEquals(8, retailer.inventory)
 		
 		game.passAWeek
 		game.passAWeek
-		assertEquals(16, consumer.inventory.is)
-		assertEquals(8, retailer.inventory.is)
+		assertEquals(16, consumer.inventory)
+		assertEquals(8, retailer.inventory)
 		assertEquals(1, consumer.incomingShips.size)
 	}
 	

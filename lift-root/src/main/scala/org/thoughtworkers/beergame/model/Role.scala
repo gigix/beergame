@@ -8,9 +8,9 @@ import scala.collection.jcl.ArrayList
 object Role extends Role with LongKeyedMetaMapper[Role] {
 	def build(name: String, informationDelay: Int, shippingDelay: Int) = {
 		val role = new Role()
-		role.name.set(name)
-		role.informationDelay.set(informationDelay)
-		role.shippingDelay.set(shippingDelay)
+		role.setName(name)
+		role.setInformationDelay(informationDelay)
+		role.setShippingDelay(shippingDelay)
 		role
 	}
 	
@@ -20,25 +20,29 @@ object Role extends Role with LongKeyedMetaMapper[Role] {
 class Role extends LongKeyedMapper[Role] with IdPK {
 	def getSingleton = Role
 	
-	// object done extends MappedBoolean(this) 
-	// 	 object owner extends MappedLongForeignKey(this, User) 
-	
-	object name extends MappedPoliteString(this, 128)
-	object informationDelay extends MappedInt(this)	
-	object shippingDelay extends MappedInt(this)
-	object inventory extends MappedInt(this) {
-		override def defaultValue = 12
+	private var _name:String = null
+	def setName(name:String) {
+		_name = name
 	}
+	def name = _name
 	
-	object hasPlacedOrder extends MappedBoolean(this)
-	def hasPlacedOrder_? = hasPlacedOrder.is
-
-	// object game extends MappedLongForeignKey(this, Game)
+	private var _informationDelay:Int = 0
+	def setInformationDelay(informationDelay:Int) {
+		_informationDelay = informationDelay
+	}
+	def informationDelay = _informationDelay
+	
+	private var _shippingDelay:Int = 0
+	def setShippingDelay(shippingDelay:Int) {
+		_shippingDelay = shippingDelay
+	}
+	def shippingDelay = _shippingDelay
+	
 	private var _game: Game = null
-	def game = _game
-	
 	private var _downstream: Role = null
 	private var _upstream: Role = null
+	
+	private var _inventory = 12
 	
 	private val _inbox = new ArrayList[Order]
 	private val _logistics = new ArrayList[Order]
@@ -48,9 +52,11 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 	private val _outgoingShips = new ArrayList[Order]
 	private val _incomingShips = new ArrayList[Order]
 	
+	private var _hasPlacedOrder = false
+	
 	def downstream = _downstream
 	def upstream = _upstream
-	
+	def game = _game
 	def currentWeek = {
 		if(_game == null) {
 			null
@@ -58,6 +64,8 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 			_game.currentWeek
 		}
 	}
+	def inventory = _inventory
+	def hasPlacedOrder = _hasPlacedOrder
 	
 	def setUpstream(role: Role) {
 		_upstream = role
@@ -68,24 +76,28 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 		_game = game
 	}
 	
+	def setInventory(inventory: Int) {
+		_inventory = inventory
+	}
+	
 	def update {
-		hasPlacedOrder.set(false)
+		_hasPlacedOrder = false
 		
 		for(order <- _inbox.clone) {
-			if(order.atWeek == currentWeek - informationDelay.is) {
+			if(order.atWeek == currentWeek - informationDelay) {
 				handleIncomingOrder(order)
 			}
 		}
 		
 		for(ship <- _logistics.clone) {
-			if(ship.atWeek == currentWeek - shippingDelay.is) {
+			if(ship.atWeek == currentWeek - shippingDelay) {
 				handleIncomingShip(ship)
 			}
 		}
 	}
 	
 	def placeOrder(amount: Int) {
-		if(hasPlacedOrder_?) {
+		if(hasPlacedOrder) {
 			return
 		}
 		
@@ -93,7 +105,7 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 		_placedOrders.add(placedOrder)
 		_upstream._inbox.add(placedOrder)
 		
-		hasPlacedOrder.set(true)
+		_hasPlacedOrder = true
 	}
 	
 	def placedOrders = _placedOrders.clone
@@ -112,10 +124,10 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 		
 		val requestedAmount = incomingOrder.amount
 		var shippedAmount = requestedAmount
-		if(inventory.is < requestedAmount) {
-			shippedAmount = inventory.is
+		if(_inventory < requestedAmount) {
+			shippedAmount = _inventory
 		}
-		inventory.set(inventory - requestedAmount)
+		_inventory -= requestedAmount				
 
 		val shippedOrder = Order.build(currentWeek, shippedAmount)
 		_outgoingShips.add(shippedOrder)			
@@ -123,7 +135,7 @@ class Role extends LongKeyedMapper[Role] with IdPK {
 	}
 	
 	private def handleIncomingShip(ship: Order) {
-		inventory.set(inventory + ship.amount)
+		_inventory += ship.amount
 		_incomingShips.add(ship)
 		_logistics.remove(ship)
 	}
