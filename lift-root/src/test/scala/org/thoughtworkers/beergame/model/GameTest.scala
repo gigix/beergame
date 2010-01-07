@@ -4,11 +4,11 @@ import _root_.junit.framework._
 import Assert._
 
 class GameTest extends TestCase("game") {
-	val consumer = Role.build("Consumer")
-	val retailer = Role.build("Retailer")
-	val wholesaler = Role.build("Wholesaler")
+	val consumer = new Role("Consumer")
+	val retailer = new Role("Retailer")
+	val wholesaler = new Role("Wholesaler")
 	val allRoles = Array(consumer, retailer, wholesaler)
-	val game = new Game
+	val game = new Game("Test Beer Game")
 	
 	override def setUp() {
 		retailer.setUpstream(wholesaler)

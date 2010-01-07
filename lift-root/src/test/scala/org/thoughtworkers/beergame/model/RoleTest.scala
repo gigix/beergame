@@ -4,9 +4,9 @@ import _root_.junit.framework._
 import Assert._
 
 class RoleTest extends TestCase("role") {
-	val retailer = Role.build("Retailer")
-	val consumer = Role.build("Consumer")
-	val wholesaler = Role.build("Wholesaler")
+	val retailer = new Role("Retailer")
+	val consumer = new Role("Consumer")
+	val wholesaler = new Role("Wholesaler")
 	
 	override def setUp() {
 		retailer.setUpstream(wholesaler)
@@ -14,7 +14,7 @@ class RoleTest extends TestCase("role") {
 	}
 	
 	def test_create_role_with_name() {
-		val retailer = Role.build("Retailer")
+		val retailer = new Role("Retailer")
 		assertTrue(retailer != null)
 		assertEquals("Retailer", retailer.name)
 	}
