@@ -52,5 +52,10 @@ class Game(_name: String) {
 		}
 	}
 	
-	def roleCount = _roles.size		
+	def roleCount = _roles.size	
+	
+	def save {
+		val persistentDir = new File("games")
+		persistentDir.mkdirs
+	}
 }
