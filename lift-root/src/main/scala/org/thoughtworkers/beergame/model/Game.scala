@@ -62,7 +62,8 @@ class Game(_name: String) {
 		val persistentDir = new File(persistentDirName)
 		persistentDir.mkdirs
 		
-		var dumpStream = new FileOutputStream(persistentDirName + "/test_beer_game.dump")
+		val dumpFileName = name.split(" ").map(word => word.toLowerCase).deepMkString("_")
+		var dumpStream = new FileOutputStream(persistentDirName + File.pathSeparator + dumpFileName)
 		dumpStream.write(Marshal.dump(this))
 		dumpStream.close
 	}
