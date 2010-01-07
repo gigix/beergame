@@ -2,6 +2,7 @@ package org.thoughtworkers.beergame.model
 
 import scala.collection.jcl.ArrayList
 
+@serializable
 class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 	def this(name: String) {
 		this(name, 2, 2)
@@ -17,13 +18,21 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 	
 	private var _inventory = 12
 	
-	private val _inbox = new ArrayList[Order]
-	private val _logistics = new ArrayList[Order]
+	private val _inbox = new java.util.ArrayList[Order]
+	private val _logistics = new java.util.ArrayList[Order]
 	
-	private val _placedOrders = new ArrayList[Order]
-	private val _incomingOrders = new ArrayList[Order]
-	private val _outgoingShips = new ArrayList[Order]
-	private val _incomingShips = new ArrayList[Order]
+	private def logistics = new ArrayList[Order](_logistics)
+	private def inbox = new ArrayList[Order](_inbox)
+		
+	private val _placedOrders = new java.util.ArrayList[Order]
+	private val _incomingOrders = new java.util.ArrayList[Order]
+	private val _outgoingShips = new java.util.ArrayList[Order]
+	private val _incomingShips = new java.util.ArrayList[Order]
+	
+	def placedOrders = new ArrayList[Order](_placedOrders)
+	def incomingOrders = new ArrayList[Order](_incomingOrders)
+	def outgoingShips = new ArrayList[Order](_outgoingShips)
+	def incomingShips = new ArrayList[Order](_incomingShips)
 	
 	private var _hasPlacedOrder = false
 	
@@ -50,13 +59,13 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 	def update {
 		_hasPlacedOrder = false
 		
-		for(order <- _inbox.clone) {
+		for(order <- inbox.clone) {
 			if(order.atWeek == currentWeek - informationDelay) {
 				handleIncomingOrder(order)
 			}
 		}
 		
-		for(ship <- _logistics.clone) {
+		for(ship <- logistics.clone) {
 			if(ship.atWeek == currentWeek - shippingDelay) {
 				handleIncomingShip(ship)
 			}
@@ -74,11 +83,6 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 		
 		_hasPlacedOrder = true
 	}
-	
-	def placedOrders = _placedOrders.clone
-	def incomingOrders = _incomingOrders.clone
-	def outgoingShips = _outgoingShips.clone
-	def incomingShips = _incomingShips.clone
 	
 	private def setDownstream(role: Role) {
 		_downstream = role

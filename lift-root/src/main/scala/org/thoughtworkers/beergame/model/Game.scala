@@ -1,12 +1,13 @@
 package org.thoughtworkers.beergame.model
 
-import java.io.File
+import java.io.{File, FileOutputStream, Serializable}
 import scala.collection.jcl.ArrayList
+import scala.util.Marshal
 
 object Game {
-	private val _allGames = new ArrayList[Game]()
+	private val _allGames = new java.util.ArrayList[Game]()
 	
-	def all = _allGames
+	def all = new ArrayList[Game](_allGames)
 	
 	def build(name: String, playerRoleNames: Array[String]) = {
 		val game = new Game(name)
@@ -32,10 +33,14 @@ object Game {
 	}
 }
 
+@serializable 
 class Game(_name: String) {
 	val name = _name
 
-	private val _roles = new ArrayList[Role]()
+	private val _roles = new java.util.ArrayList[Role]()
+	private def roles = new ArrayList[Role](_roles)
+	def roleCount = _roles.size		
+	
 	private var _currentWeek = 0
 	
 	def addRole(role: Role) {
@@ -47,15 +52,18 @@ class Game(_name: String) {
 	
 	def passAWeek {
 		_currentWeek = _currentWeek + 1
-		for(role <- _roles) {
+		for(role <- roles) {
 			role.update
 		}
 	}
 	
-	def roleCount = _roles.size	
-	
 	def save {
-		val persistentDir = new File("games")
+		val persistentDirName = "games"
+		val persistentDir = new File(persistentDirName)
 		persistentDir.mkdirs
+		
+		var dumpStream = new FileOutputStream(persistentDirName + "/test_beer_game.dump")
+		dumpStream.write(Marshal.dump(this))
+		dumpStream.close
 	}
 }
