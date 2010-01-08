@@ -1,13 +1,15 @@
 package org.thoughtworkers.beergame.model
 
-import java.io.{File, FileOutputStream, Serializable}
+import java.io.{File, FileOutputStream, FileInputStream, Serializable}
 import scala.collection.jcl.ArrayList
 import scala.util.Marshal
 
 object Game {
 	private val _allGames = new java.util.ArrayList[Game]()
-	
 	def all = new ArrayList[Game](_allGames)
+	
+	private val persistentDirName = "games"
+	private val persistentDir = new File(persistentDirName)
 	
 	def build(name: String, playerRoleNames: Array[String]) = {
 		val game = new Game(name)
@@ -31,6 +33,20 @@ object Game {
 		_allGames.add(game)
 		game
 	}
+	
+	def load(name: String) = {
+		val content = new Array[byte](dumpFile(name).length.intValue)
+		val loadStream = new FileInputStream(dumpFile(name))
+		loadStream.read(content)
+		loadStream.close
+		
+		Marshal.load[Game](content)
+	}
+	
+	private def dumpFile(name: String) = {
+		val dumpFileName = name.split(" ").map(word => word.toLowerCase).deepMkString("_")
+		new File(persistentDirName + File.pathSeparator + dumpFileName)
+	}	
 }
 
 @serializable 
@@ -58,13 +74,20 @@ class Game(_name: String) {
 	}
 	
 	def save {
-		val persistentDirName = "games"
-		val persistentDir = new File(persistentDirName)
-		persistentDir.mkdirs
+		Game.persistentDir.mkdirs
 		
-		val dumpFileName = name.split(" ").map(word => word.toLowerCase).deepMkString("_")
-		var dumpStream = new FileOutputStream(persistentDirName + File.pathSeparator + dumpFileName)
+		var dumpStream = new FileOutputStream(Game.dumpFile(name))
 		dumpStream.write(Marshal.dump(this))
 		dumpStream.close
 	}
+	
+	override def equals(another: Any) = {
+		if(another == null || !another.isInstanceOf[Game]) {
+			false
+		} else {
+			another.asInstanceOf[Game].name == this.name
+		}
+	}
+	
+	override def hashCode = name.hashCode
 }

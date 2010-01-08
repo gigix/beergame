@@ -95,5 +95,9 @@ class GameTest extends TestCase("game") {
 		game.save
 		val targetFile = new File("games/test_beer_game.dump")
 		assert(targetFile.exists)
+		
+		val loadedGame = Game.load(game.name)
+		assertEquals(game, loadedGame)
+		assertEquals(game.roleCount, loadedGame.roleCount)
 	}
 }
