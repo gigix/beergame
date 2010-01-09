@@ -3,6 +3,8 @@ package org.thoughtworkers.beergame.model
 import _root_.junit.framework._
 import Assert._
 
+import scala.util.Marshal
+
 class RoleTest extends TestCase("role") {
 	val retailer = new Role("Retailer")
 	val consumer = new Role("Consumer")
@@ -25,5 +27,15 @@ class RoleTest extends TestCase("role") {
 		
 		assertEquals(consumer.upstream, retailer)
 		assertEquals(wholesaler.downstream, retailer)
+	}
+	
+	def test_serialization() {
+		consumer.placeOrder(4)
+		val serializedBytes = Marshal.dump(consumer)
+		val loadedConsumer = Marshal.load[Role](serializedBytes)
+		
+		// assertEquals(consumer, loadedConsumer)
+		assertEquals(1, loadedConsumer.placedOrders.size)
+		assertEquals(4, loadedConsumer.placedOrders.first.amount)
 	}
 }

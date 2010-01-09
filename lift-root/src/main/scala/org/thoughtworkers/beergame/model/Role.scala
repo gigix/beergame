@@ -39,7 +39,15 @@ class Role(_name: String, _informationDelay: Int, _shippingDelay: Int) {
 	def downstream = _downstream
 	def upstream = _upstream
 	def game = _game
-	def currentWeek = _game.currentWeek
+
+	def currentWeek = {
+		if(_game == null) {
+			0
+		} else {
+			_game.currentWeek
+		}
+	}
+
 	def inventory = _inventory
 	def hasPlacedOrder = _hasPlacedOrder
 	
