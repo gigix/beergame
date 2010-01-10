@@ -45,7 +45,7 @@ object Game {
 	
 	private def dumpFile(name: String) = {
 		val dumpFileName = name.split(" ").map(word => word.toLowerCase).deepMkString("_")
-		new File(persistentDirName + File.separator + dumpFileName)
+		new File(persistentDirName + File.separator + dumpFileName + ".dump")
 	}	
 }
 
