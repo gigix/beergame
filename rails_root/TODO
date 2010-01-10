@@ -3,10 +3,10 @@ AS A player, I WANT TO see all existing games listed, SO THAT I can choose one t
 
 
 ===== DOING =====
+AS AN instructor, I WANT TO create a standard game, SO THAT I can start playing
 
 
 ===== STORIES =====
-AS AN instructor, I WANT TO create a standard game, SO THAT I can start playing
 AS A player, I WANT TO join a game with a role, SO THAT I can play with others
 AS A player, I WANT TO see current status of my role, SO THAT I can make ordering decisions
 AS A player, I WANT TO place orders, SO THAT I can respond to my customer

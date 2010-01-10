@@ -14,10 +14,20 @@ describe Game do
     it 'associates roles' do
       consumer = @game.roles.first
       retailer = @game.roles[1]
+      wholesaler = @game.roles[2]
+      brewery = @game.roles.last
+      
+      consumer.should_not be_playable
+      retailer.should be_playable
+      wholesaler.should be_playable
+      brewery.should_not be_playable
       
       consumer.name.should == 'consumer'
       consumer.downstream.should be_nil
       consumer.upstream.should == retailer
+      retailer.downstream.should == consumer
+      retailer.upstream.should == wholesaler
+      wholesaler.downstream.should == retailer
     end
   end
 end

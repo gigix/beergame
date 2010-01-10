@@ -1,5 +1,10 @@
+<% form_for :game, :url => { :action => "create" } do |f| %>
+	<%= f.text_field :name %>
+	<%= submit_tag 'Create' %>
+<% end %>
+
 <ul>
 	<% @games.each do |game| %>
-	<li><%= game.name %></li>
+	<li><%= link_to game.name, game_path(game) %></li>
 	<% end %>
 </ul>

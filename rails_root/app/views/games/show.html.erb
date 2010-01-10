@@ -1,0 +1,7 @@
+<h1><%= @game.name %></h1>
+
+<ul>
+	<% @game.roles.each do |role| %>
+	<li><%= role.name %>(<%= role.playable? %>)</li>
+	<% end %>
+</ul>

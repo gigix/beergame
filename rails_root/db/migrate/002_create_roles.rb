@@ -4,6 +4,7 @@ class CreateRoles < ActiveRecord::Migration
       t.integer :game_id
       t.integer :upstream_id
       t.string :name
+      t.boolean :playable
       
       t.timestamps
     end
