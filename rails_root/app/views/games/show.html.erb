@@ -2,6 +2,6 @@
 
 <ul>
 	<% @game.roles.each do |role| %>
-	<li><%= role.name %>(<%= role.playable? %>)</li>
+	<li><%= link_to_play_a_role role %></li>
 	<% end %>
 </ul>

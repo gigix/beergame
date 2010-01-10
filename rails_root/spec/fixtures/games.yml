@@ -5,3 +5,7 @@
 #
 # two:
 #   column: value
+
+test_game:
+    id: 1
+    name: Test Game

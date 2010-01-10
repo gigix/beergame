@@ -1,7 +1,42 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-# one:
-#   column: value
-#
-# two:
-#   column: value
+consumer:
+    id: 1
+    game_id: 1
+    game: test_game
+    playable: false
+    name: Consumer
+    upstream_id: 2
+    
+retailer:
+    id: 2
+    game_id: 1
+    game: test_game
+    playable: true
+    name: Retailer
+    upstream_id: 3
+    
+wholesaler:
+    id: 3
+    game_id: 1
+    playable: true
+    name: Wholesaler
+    upstream_id: 4
+    
+distributor:
+    id: 4
+    game_id: 1
+    playable: true
+    name: Distributor
+    upstream_id: 5
+    
+factory:
+    id: 5
+    game_id: 1
+    playable: true
+    name: Factory
+    upstream_id: 6
+    
+brewery:
+    id: 6
+    game_id: 1
+    playable: false
+    name: Brewery
