@@ -1,8 +1,8 @@
 <lift:surround with="default" at="content">
 	<p>
 		<lift:games.create form='post'>
-			<p>Name:<game:name /></p>
-			<p><game:submit /></p>
+			<p>Name:<game:name game:id='game_name' /></p>
+			<p><game:submit game:id='game_create_submit' /></p>
 		</lift:games.create>
 	</p>
 	<h2>所有游戏</h2>
