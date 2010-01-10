@@ -1,4 +1,10 @@
 <lift:surround with="default" at="content">
-		<h2>Welcome to your project!</h2>
-		<p><lift:games.list /></p>
+	<p>
+		<lift:games.create form='post'>
+			<p>Name:<game:name /></p>
+			<p><game:submit /></p>
+		</lift:games.create>
+	</p>
+	<h2>所有游戏</h2>
+	<p><lift:games.list /></p>
 </lift:surround>

@@ -5,11 +5,25 @@ import scala.collection.jcl.ArrayList
 import scala.util.Marshal
 
 object Game {
-	private val _allGames = new java.util.ArrayList[Game]()
-	def all = new ArrayList[Game](_allGames)
+	def all = {
+		object DumpFileFilter extends java.io.FileFilter {
+			override def accept(file: File): Boolean = {
+				file.getName.endsWith(dumpFileExt)
+			}
+		}
+		
+		val dumpFiles = persistentDir.listFiles(DumpFileFilter)
+		
+		if(dumpFiles == null) {
+			new ArrayList[Game]
+		} else {
+			dumpFiles.map(file => Game.load(file))
+		}
+	}
 	
 	private val persistentDirName = "games"
 	private val persistentDir = new File(persistentDirName)
+	private val dumpFileExt = ".dump"
 	
 	def build(name: String, playerRoleNames: Array[String]) = {
 		val game = new Game(name)
@@ -30,22 +44,25 @@ object Game {
 		currentRole.setUpstream(brewery)
 		game.addRole(brewery)
 		
-		_allGames.add(game)
 		game
 	}
 	
-	def load(name: String) = {
-		val content = new Array[byte](dumpFile(name).length.intValue)
-		val loadStream = new FileInputStream(dumpFile(name))
+	def load(name: String): Game = {
+		load(dumpFile(name))
+	}
+	
+	def load(dumpFile: File): Game = {
+		val content = new Array[byte](dumpFile.length.intValue)
+		val loadStream = new FileInputStream(dumpFile)
 		loadStream.read(content)
 		loadStream.close
 		
 		Marshal.load[Game](content)
 	}
 	
-	private def dumpFile(name: String) = {
-		val dumpFileName = name.split(" ").map(word => word.toLowerCase).deepMkString("_")
-		new File(persistentDirName + File.separator + dumpFileName + ".dump")
+	private def dumpFile(name: String): File = {
+		val dumpFileName = name.split(" ").map(word => word.toLowerCase).deepMkString("_") + dumpFileExt
+		new File(persistentDirName + File.separator + dumpFileName)
 	}	
 }
 

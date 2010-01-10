@@ -28,10 +28,8 @@ class GameTest extends TestCase("game") {
 
   private def delete_folder(folder: File) {
     if (folder.isDirectory) {
-      val files = folder.list
-      for (i <- 0 to files.length - 1) {
-        val file = new File(folder, files(i))
-        delete_folder(file);
+      for (file <- folder.list) {
+        delete_folder(new File(folder, file));
       }
     }
     folder.delete
@@ -98,7 +96,7 @@ class GameTest extends TestCase("game") {
 
   def test_list_all_games() {
     assertEquals(0, Game.all.size)
-    Game.build("A Standard Game", Array("Retailer", "Wholesaler", "Distributor", "Factory"))
+    game.save
     assertEquals(1, Game.all.size)
   }
 
