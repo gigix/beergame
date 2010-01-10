@@ -23,23 +23,17 @@ class GameTest extends TestCase("game") {
   }
 
   override def tearDown() {
-    //delete_folder(new File("games"))
+    delete_folder(new File("games"))
   }
 
   private def delete_folder(folder: File) {
-    val files = folder.list
-    try{
-    for (i <- 0 to files.length-1) {
-      println("file: "+files(i))
-      val file = new File(folder, files(i))
-      if (file.isDirectory)
+    if (folder.isDirectory) {
+      val files = folder.list
+      for (i <- 0 to files.length - 1) {
+        val file = new File(folder, files(i))
         delete_folder(file);
-      else
-        file.delete
-    }   }catch{
-      case ex: RuntimeException => ex.printStackTrace
+      }
     }
-    println("folder; "+folder.getName)
     folder.delete
   }
 
