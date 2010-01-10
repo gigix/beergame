@@ -9,7 +9,7 @@ import org.thoughtworkers.beergame.model.Game
 
 class Games {
 	def list: NodeSeq = <ul>{
-			Game.all.map{game => <li>{game.name}</li>}
+			Game.all.map{game => <li><a href={showPath(game)}>{game.name}</a></li>}
 		}</ul>
 		
 	def create(xhtml : NodeSeq) : NodeSeq = {
@@ -25,5 +25,9 @@ class Games {
 		bind("game", xhtml,
 			"name" -> SHtml.text(name, name = _),
 			"submit" -> SHtml.submit("创建", processEntry))
+	}
+	
+	private def showPath(game: Game) = {
+		"games/show.html?name=" + game.name
 	}
 }
