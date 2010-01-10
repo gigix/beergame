@@ -17,4 +17,15 @@ describe RolesController do
       assigns(:role).should == @retailer
     end
   end
+  
+  describe 'POST place_order' do
+    it 'place order to upstream' do
+      lambda do
+        post :place_order, :id => @retailer, :game_id => @game, :amount => 100
+        response.should redirect_to(game_role_path(@game, @retailer))
+      end.should change(Order, :count).by(1)
+      
+      Order.find(:all).first.role.name.should == 'retailer'
+    end
+  end
 end

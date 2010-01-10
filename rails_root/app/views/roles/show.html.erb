@@ -1,2 +1,16 @@
 <h1><%= @game.name %></h1>
 <h2><%= @role.name %></h2>
+
+<% form_for(@role, :url => { :action => "place_order" }, :html => {:game_id => @game} )do |f| %>
+	<% fields_for :placed_orders do |order| %>
+		<%= order.text_field :amount %>
+	<% end %>
+	<%= submit_tag 'Place order' %>
+<% end %>
+
+Your placed orders:
+<ul>
+<% @role.placed_orders.each do |order|%>
+	<%= order.amount%>
+<% end%>
+</ul>
