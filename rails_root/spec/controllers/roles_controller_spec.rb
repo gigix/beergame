@@ -21,7 +21,7 @@ describe RolesController do
   describe 'POST place_order' do
     it 'place order to upstream' do
       lambda do
-        post :place_order, :id => @retailer, :game_id => @game, :amount => 100
+        post :place_order, :role => {:id => @retailer, :game_id => @game, :placed_orders => {:amount => 100}}
         response.should redirect_to(game_role_path(@game, @retailer))
       end.should change(Order, :count).by(1)
       
