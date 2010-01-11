@@ -1,6 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :games, :has_many => :roles
-  
+  map.resources :games, :has_many => {:roles => :orders}
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:

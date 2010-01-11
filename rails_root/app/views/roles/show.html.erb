@@ -1,7 +1,7 @@
 <h1><%= @game.name %></h1>
 <h2><%= @role.name %></h2>
 
-<% form_for(@role, :url => { :action => "place_order" })do |f| %>
+<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create', :method => :put ) )do |f| %>
 	<% f.fields_for :placed_orders do |order| %>
 		<%= order.text_field :amount %>
 	<% end %>
