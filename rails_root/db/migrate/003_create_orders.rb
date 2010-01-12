@@ -1,7 +1,8 @@
 class CreateOrders < ActiveRecord::Migration
   def self.up
     create_table :orders do |t|
-      t.integer :role_id
+      t.integer :sender_id
+      t.integer :inbox_id
       t.integer :amount
       
       t.timestamps

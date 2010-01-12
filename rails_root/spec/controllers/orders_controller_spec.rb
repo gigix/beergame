@@ -16,7 +16,8 @@ describe OrdersController do
         response.should redirect_to(game_role_path(@game, @retailer))
       end.should change(Order, :count).by(1)
       
-      Order.find(:all).first.role.name.should == 'retailer'
+      Order.find(:all).first.sender.name.should == 'retailer'
+      Order.find(:all).first.inbox.name.should == 'wholesaler'
     end
   end
 end

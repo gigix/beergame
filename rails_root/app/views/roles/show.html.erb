@@ -1,7 +1,7 @@
 <h1><%= @game.name %></h1>
 <h2><%= @role.name %></h2>
 
-<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create', :method => :put ) )do |f| %>
+<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create') )do |f| %>
 	<% f.fields_for :placed_orders do |order| %>
 		<%= order.text_field :amount %>
 	<% end %>
@@ -13,6 +13,13 @@
 Your placed orders:
 <ul>
 <% @role.placed_orders.each do |order|%>
+	<li><%= order.amount%></li>
+<% end%>
+</ul>
+
+Your inbox orders:
+<ul>
+<% @role.inbox_orders.each do |order|%>
 	<li><%= order.amount%></li>
 <% end%>
 </ul>
