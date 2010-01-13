@@ -1,11 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Game do
-  describe 'self.create_with_roles' do
-    before(:each) do
-      @game = Game.create_with_roles('test_game', ['retailer', 'wholesaler', 'distributor', 'factory'])
-    end
-    
+  include PreparedGame
+  
+  describe 'self.create_with_roles' do    
     it 'creates game and roles' do
       Game.count.should == 1
       @game.roles.count.should == 6

@@ -43,5 +43,16 @@ Spec::Runner.configure do |config|
   #
   # == Notes
   # 
-  # For more information take a look at Spec::Runner::Configuration and Spec::Runner
+  # For more information take a look at Spec::Runner::Configuration and Spec::Runner  
+end
+
+module PreparedGame
+  def PreparedGame.included(base)
+      base.class_eval do
+        before(:each) do
+          @game = Game.create_with_roles('test_game', ['retailer', 'wholesaler', 'distributor', 'factory'])
+          @consumer, @retailer, @wholesaler, @distributor, @factory, @brewery = @game.roles
+        end
+      end
+  end  
 end

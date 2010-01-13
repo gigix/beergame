@@ -3,11 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe OrdersController do
   integrate_views
   
-  before(:each) do
-    @game = Game.create_with_roles('test_game', ['retailer', 'wholesaler', 'distributor', 'factory'])
-    @consumer = @game.roles.first
-    @retailer = @game.roles[1]
-  end
+  include PreparedGame
   
   describe 'POST create' do
     it 'role places order' do
