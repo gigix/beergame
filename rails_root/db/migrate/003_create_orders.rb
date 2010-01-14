@@ -3,7 +3,9 @@ class CreateOrders < ActiveRecord::Migration
     create_table :orders do |t|
       t.integer :sender_id
       t.integer :inbox_id
+      t.integer :receiver_id
       t.integer :amount
+      t.integer :at_week
       
       t.timestamps
     end

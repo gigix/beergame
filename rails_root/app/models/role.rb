@@ -6,10 +6,15 @@ class Role < ActiveRecord::Base
   has_one :downstream, :class_name => 'Role', :foreign_key => 'upstream_id'
   belongs_to :upstream, :class_name => 'Role', :foreign_key => 'upstream_id'
   
-  
   def place_order(amount)
+    return if @has_placed_order
     order = placed_orders.create!(:amount => amount)
     upstream.inbox_orders.push(order)
+    game.order_placed(self)
+    @has_placed_order = true
   end
   
+  def update_status
+    @has_placed_order = false
+  end
 end
