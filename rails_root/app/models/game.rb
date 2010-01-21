@@ -30,5 +30,9 @@ class Game < ActiveRecord::Base
   
   def pass_week
     update_attributes(:current_week => current_week+1)
+    roles.each{ |role|
+      role.update_status
+    }
+    roles.first.place_order 4
   end
 end

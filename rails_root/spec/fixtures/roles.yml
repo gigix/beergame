@@ -5,6 +5,9 @@ consumer:
     playable: false
     name: Consumer
     upstream_id: 2
+    information_delay: 2
+    shipping_delay: 2
+    order_placed: false
     
 retailer:
     id: 2
@@ -13,6 +16,9 @@ retailer:
     playable: true
     name: Retailer
     upstream_id: 3
+    information_delay: 2
+    shipping_delay: 2
+    order_placed: false
     
 wholesaler:
     id: 3
@@ -20,6 +26,9 @@ wholesaler:
     playable: true
     name: Wholesaler
     upstream_id: 4
+    information_delay: 2
+    shipping_delay: 2
+    order_placed: false
     
 distributor:
     id: 4
@@ -27,6 +36,9 @@ distributor:
     playable: true
     name: Distributor
     upstream_id: 5
+    information_delay: 2
+    shipping_delay: 2
+    order_placed: false
     
 factory:
     id: 5
@@ -34,9 +46,14 @@ factory:
     playable: true
     name: Factory
     upstream_id: 6
+    information_delay: 2
+    shipping_delay: 2
+    order_placed: false
     
 brewery:
     id: 6
     game_id: 1
     playable: false
     name: Brewery
+    information_delay: 2
+    shipping_delay: 2

@@ -40,6 +40,10 @@ describe Role do
     it 'pass current week after order placing finished' do
       all_roles_place_order
       @game.reload.current_week.should == 2
+      @consumer.reload
+      @consumer.should be_order_placed
+      @consumer.placed_orders.size.should == 2
+      @consumer.placed_orders[1].amount.should == 4
     end
   end
   

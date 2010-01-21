@@ -9,3 +9,5 @@
 test_game:
     id: 1
     name: Test Game
+    current_week: 1
+    
