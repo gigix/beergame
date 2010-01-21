@@ -27,6 +27,11 @@ describe Game do
       retailer.upstream.should == wholesaler
       wholesaler.downstream.should == retailer
     end
+    
+    it 'consumer will place order after game created' do
+      consumer = @game.roles.first
+      consumer.placed_orders.size.should == 1
+    end
   end
   
   describe 'self.order_placed' do

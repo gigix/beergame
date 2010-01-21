@@ -13,6 +13,7 @@ class Game < ActiveRecord::Base
     end
     
     last_role.update_attributes(:playable => false)
+    game.roles.first.place_order 4
     game
   end
   
