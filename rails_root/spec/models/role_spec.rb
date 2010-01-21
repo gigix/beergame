@@ -13,6 +13,7 @@ describe Role do
       @consumer.placed_orders.size.should == 1
       @order.sender.should == @consumer
       @order.amount.should == 20
+      @order.at_week.should == 1
     end
     
     it 'increases inbox orders of upstream' do
@@ -39,11 +40,13 @@ describe Role do
     
     it 'pass current week after order placing finished' do
       all_roles_place_order
-      @game.reload.current_week.should == 2
+      @game.reload
+      @game.current_week.should == 2
       @consumer.reload
       @consumer.should be_order_placed
       @consumer.placed_orders.size.should == 2
       @consumer.placed_orders[1].amount.should == 4
+      @consumer.placed_orders[1].at_week.should == 2
     end
   end
   

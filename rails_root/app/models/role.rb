@@ -9,7 +9,7 @@ class Role < ActiveRecord::Base
   def place_order(amount)
     return if order_placed?
     update_attributes(:order_placed => true)
-    order = placed_orders.create!(:amount => amount)
+    order = placed_orders.create!(:amount => amount, :at_week => game.current_week)
     upstream.inbox_orders.push(order)
     game.order_placed()
   end
