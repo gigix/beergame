@@ -7,14 +7,14 @@ class Role < ActiveRecord::Base
   belongs_to :upstream, :class_name => 'Role', :foreign_key => 'upstream_id'
   
   def place_order(amount)
-    return if @has_placed_order
+    return if order_placed?
+    update_attributes(:order_placed => true)
     order = placed_orders.create!(:amount => amount)
     upstream.inbox_orders.push(order)
-    game.order_placed(self)
-    @has_placed_order = true
+    game.order_placed()
   end
   
   def update_status
-    @has_placed_order = false
+    update_attributes(:order_placed => false)
   end
 end

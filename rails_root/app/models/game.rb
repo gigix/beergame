@@ -16,26 +16,19 @@ class Game < ActiveRecord::Base
     game
   end
   
-  def order_placed(role)
-    @roles_placed_order = 0 if @roles_placed_order.nil?
-    @roles_placed_order = @roles_placed_order + 1
+  def order_placed()
     pass_week if order_placing_finished? 
   end
   
   private
-  def order_placing_finished? 
-    @roles_placed_order == (roles.size - 1)
-  end
-
-  def pass_week
-    #current_week = current_week + 1
-    next_week = current_week + 1
-    update_attributes(:current_week => next_week)
-    @roles_placed_order = 0
-    consumer_place_order 4
+  def order_placing_finished?
+    roles[0..roles.length-2].each { |role|
+      return false if not role.order_placed? 
+    }
+    return true
   end
   
-  def consumer_place_order amount
-    #roles.first.place_order amount
+  def pass_week
+    update_attributes(:current_week => current_week+1)
   end
 end

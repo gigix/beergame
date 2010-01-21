@@ -7,6 +7,7 @@ class CreateRoles < ActiveRecord::Migration
       t.boolean :playable
       t.integer :information_delay
       t.integer :shipping_delay
+      t.boolean :order_placed
       
       t.timestamps
     end
