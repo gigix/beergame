@@ -3,7 +3,7 @@ class Game < ActiveRecord::Base
   attr_accessor :roles_placed_order
   
   def self.create_with_roles(name, role_names)
-    game = create!(:name => name, :current_week => 1)
+    game = create!(:name => name, :current_week => 1, :information_delay => 2, :shipping_delay => 2)
     
     last_role = game.roles.create!(:name => 'consumer')
     role_names.push('brewery').each do |role_name| 
@@ -34,6 +34,6 @@ class Game < ActiveRecord::Base
     roles.each{ |role|
       role.update_status
     }
-    roles.first.place_order 4
+    roles.first.place_order 8
   end
 end

@@ -3,6 +3,8 @@ class CreateGames < ActiveRecord::Migration
     create_table :games do |t|
       t.string :name
       t.integer :current_week
+      t.integer :information_delay
+      t.integer :shipping_delay
       
       t.timestamps
     end

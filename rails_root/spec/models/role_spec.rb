@@ -44,7 +44,7 @@ describe Role do
       consumer = @game.roles.first
       consumer.should be_order_placed
       consumer.placed_orders.size.should == 2
-      consumer.placed_orders[1].amount.should == 4
+      consumer.placed_orders[1].amount.should == 8
       consumer.placed_orders[1].at_week.should == 2
     end
   end
@@ -57,6 +57,16 @@ describe Role do
       @retailer.placed_orders.size.should == 2
       @retailer.placed_orders.first.amount.should == 20
       @retailer.placed_orders[1].amount.should == 50
+    end
+    
+    it 'place order from inbox to received_order' do
+      @retailer.place_order(20)
+      @wholesaler.inbox_orders.size.should == 1
+      @game.update_attributes(:current_week => 3)
+      @game.reload
+      @wholesaler.update_status
+      @wholesaler.inbox_orders.size.should == 0
+      @wholesaler.received_orders.size.should == 1
     end
   end  
   

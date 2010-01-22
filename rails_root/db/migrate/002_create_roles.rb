@@ -5,8 +5,6 @@ class CreateRoles < ActiveRecord::Migration
       t.integer :upstream_id
       t.string :name
       t.boolean :playable
-      t.integer :information_delay
-      t.integer :shipping_delay
       t.boolean :order_placed
       
       t.timestamps
