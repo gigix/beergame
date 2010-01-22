@@ -13,12 +13,10 @@ class Game < ActiveRecord::Base
     end
     
     last_role.update_attributes(:playable => false, :information_delay => 1)
-    game.roles[1].update_attributes(:information_delay => 0)
-    
+
     game.roles[1..game.roles.length-1].each{ |role|
-      role.received_orders.create!(:amount => 4, :at_week => 1, :sender_id => role.downstream)
+      order = role.received_orders.create!(:amount => 4, :at_week => 1)
     }
-    
     game
   end
   
@@ -28,7 +26,7 @@ class Game < ActiveRecord::Base
   
   private
   def order_placing_finished?
-    roles[0..roles.length-2].each { |role|
+    roles[1..roles.length-2].each { |role|
       return false if not role.order_placed? 
     }
     return true
@@ -36,13 +34,13 @@ class Game < ActiveRecord::Base
   
   def pass_week
     update_attributes(:current_week => current_week+1)
-    roles.each{ |role|
+    
+    roles[1].received_orders.create!(:amount => 8, :at_week => current_week, :sender => roles.first)
+    roles[1].update_status
+    roles[2..roles.length-1].each{ |role|
+      role.received_orders.create!(:amount => 4, :at_week => current_week, :sender => role.downstream) unless role.information_delay_arrived?
       role.update_status
     }
-    roles.first.place_order 8
   end
-  
-  def all_roles_receive_order
-    
-  end
+
 end

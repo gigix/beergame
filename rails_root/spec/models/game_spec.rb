@@ -30,45 +30,53 @@ describe Game do
     end
     
     it 'all roles should receive order after game created' do
-      @game.roles.first.received_orders.size.should == 0
+      @game.roles.first.placed_orders.size.should == 0
       
       @game.roles[1..@game.roles.size-1].each{ |role|
+        role.placed_orders.size.should == 0
         role.received_orders.size.should == 1
         order = role.received_orders[0]
-        order.amount = 4
-        order.at_week = 1
-        order.sender_id = role.downstream
+        order.amount.should == 4
+        order.at_week.should == 1
       }
-    end
-    
-    it 'all roles except for the one nearest to consumer should keep receiving order during the information delay time after game created' do
-      
     end
   end
   
   describe 'self.order_placed' do
     
     it 'do not pass current week if order placing not finished' do
-      [@consumer, @retailer, @wholesaler, @distributor].each{|role|
-        role.update_attributes(:order_placed => true)
+      [@retailer, @wholesaler, @distributor].each{|role|
+        role.place_order(100)
       }
-      @game.order_placed
       @game.current_week.should == 1
     end
     
     it 'pass current week after order placing finished' do
-      [@consumer, @retailer, @wholesaler, @distributor, @factory].each{|role|
-        role.update_attributes(:order_placed => true)
-      }
-      @game.order_placed
+      all_roles_place_order
+      @game.reload
       @game.current_week.should == 2
       
-      #consumer = @game.roles.first
-      #consumer.should be_order_placed
-      #consumer.placed_orders.size.should == 2
-      #consumer.placed_orders[1].amount.should == 8
-      #consumer.placed_orders[1].at_week.should == 2
+      retailer = @game.roles[1]
+      retailer.received_orders.last.amount.should == 8
+      retailer.received_orders.last.at_week.should == 2
     end
-    
+     
+    it 'all roles except for the one nearest to consumer should keep receiving order during the information delay time after game created' do
+      all_roles_place_order   
+      @game.roles[2..@game.roles.size-2].each{ |role|
+        role.received_orders.size.should == 2
+        order = role.received_orders[1]
+        order.amount = 4
+        order.at_week = 2
+        order.sender_id = role.downstream
+      }
+    end
+  end
+  
+  private
+  def all_roles_place_order
+    [@retailer, @wholesaler, @distributor, @factory].each{|role|
+      role.place_order(100)
+    }
   end
 end

@@ -30,19 +30,14 @@ describe Role do
       @retailer.placed_orders.size.should == 1
       @order.amount.should == 20
     end
-    
-    it 'do not pass current week if order placing not finished' do
-      @wholesaler.place_order(50)
-      @distributor.place_order(60)
-      @game.current_week.should == 1
-    end
-    
-    it 'pass current week after order placing finished' do
-      [@consumer, @wholesaler, @distributor, @factory].each{|role|
-        role.place_order(100)
-      }
-      @game.reload
-      @game.current_week.should == 2
+  end
+  
+  describe :information_delay_arrived do
+    it 'calculates the time duration between current week and start week' do
+      @wholesaler.should_not be_information_delay_arrived
+      @game.update_attributes(:current_week => 1 + @wholesaler.information_delay)
+      @wholesaler.reload
+      @wholesaler.should be_information_delay_arrived
     end
   end
   
@@ -56,10 +51,10 @@ describe Role do
       @retailer.placed_orders[1].amount.should == 50
     end
     
-    it 'place order from inbox to received_order as week passed' do
+    it 'place order from inbox to received_order which matches information delay' do
       @retailer.place_order(20)
       @wholesaler.inbox_orders.size.should == 1
-      @game.update_attributes(:current_week => 3)
+      @game.update_attributes(:current_week => 1 + @wholesaler.information_delay)
       @wholesaler.update_status
       @wholesaler.inbox_orders.size.should == 0
       orders = Order.find(:all, :conditions => {:amount => 20, :sender_id => @retailer, :receiver_id => @wholesaler})

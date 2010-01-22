@@ -20,6 +20,10 @@ class Role < ActiveRecord::Base
     handle_inbox_orders
   end
   
+  def information_delay_arrived?
+    return (current_week - 1) >= information_delay
+  end
+  
   private
   def handle_inbox_orders
     inbox_orders.clone.each{ |order|
@@ -29,7 +33,7 @@ class Role < ActiveRecord::Base
   
   def handle_received_order order
     order.update_attributes(:at_week => current_week)
-    received_orders.push(order)
+    received_orders << order
     inbox_orders.delete(order)
   end
   
