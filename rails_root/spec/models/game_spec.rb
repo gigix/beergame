@@ -72,22 +72,36 @@ describe Game do
       retailer.received_orders.last.at_week.should == 2
     end
      
-    it 'all the other roles should keep receiving order during the information delay time' do
+    it 'all the other roles should keep receiving order placed by during the information delay time' do
       all_roles_place_order 
         
       @game.roles[2..@game.roles.size-2].each{ |role|
         role.received_orders.size.should == 2
         order = role.received_orders[1]
-        order.amount = 4
-        order.at_week = 2
-        order.sender_id = role.downstream
+        order.amount.should == 4
+        order.at_week.should == 2
+        order.sender.should == nil
       }
+      
+    end
+    
+    it 'all the other roles should receive order from downstream after information delay' do
+      all_roles_place_order
+      @brewery.received_orders.last.amount.should == 100
+      
+      (@game.roles[2].information_delay - 1).times{
+        all_roles_place_order
+      }
+      @game.reload
+      @game.current_week.should == 3
+      @wholesaler.received_orders.last.amount.should == 100
     end
   end
   
   private
   def all_roles_place_order
     [@retailer, @wholesaler, @distributor, @factory].each{|role|
+      role.reload
       role.place_order(100)
     }
   end

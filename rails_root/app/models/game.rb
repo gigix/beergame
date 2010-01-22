@@ -35,10 +35,10 @@ class Game < ActiveRecord::Base
   def pass_week
     update_attributes(:current_week => current_week+1)
     
-    roles[1].received_orders.create!(:amount => 8, :at_week => current_week, :sender => roles.first)
+    roles[1].received_orders.create!(:amount => 8, :at_week => current_week)
     roles[1].update_status
     roles[2..roles.length-1].each{ |role|
-      role.received_orders.create!(:amount => 4, :at_week => current_week, :sender => role.downstream) unless role.information_delay_arrived?
+      role.received_orders.create!(:amount => 4, :at_week => current_week) unless role.information_delay_arrived?
       role.update_status
     }
   end
