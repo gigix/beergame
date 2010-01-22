@@ -29,16 +29,23 @@ describe Game do
       wholesaler.downstream.should == retailer
     end
     
-    it 'all roles should receive order after game created' do
-      @game.roles.first.placed_orders.size.should == 0
-      
-      @game.roles[1..@game.roles.size-1].each{ |role|
+    it 'game places order will not increase placed_orders that belongs to role' do
+      @game.roles.each{ |role|
         role.placed_orders.size.should == 0
+      }
+    end
+    
+    it 'all roles should receive order after game created' do
+      @game.roles[1..@game.roles.size-1].each{ |role|
         role.received_orders.size.should == 1
         order = role.received_orders[0]
         order.amount.should == 4
         order.at_week.should == 1
       }
+    end
+    
+    it 'orders placed by game should not have sender' do
+      @retailer.received_orders.first.sender.should == nil
     end
   end
   
@@ -55,14 +62,19 @@ describe Game do
       all_roles_place_order
       @game.reload
       @game.current_week.should == 2
+    end
+    
+    it 'the role nearest to the consumer should receive the order from consumer' do
+      all_roles_place_order 
       
       retailer = @game.roles[1]
       retailer.received_orders.last.amount.should == 8
       retailer.received_orders.last.at_week.should == 2
     end
      
-    it 'all roles except for the one nearest to consumer should keep receiving order during the information delay time after game created' do
-      all_roles_place_order   
+    it 'all the other roles should keep receiving order during the information delay time' do
+      all_roles_place_order 
+        
       @game.roles[2..@game.roles.size-2].each{ |role|
         role.received_orders.size.should == 2
         order = role.received_orders[1]
