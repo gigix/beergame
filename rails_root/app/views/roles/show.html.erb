@@ -21,7 +21,7 @@ Your placed orders:
 Your received orders:
 <ul>
 <% @role.received_orders.each do |order|%>
-	<li><%= order.amount%> placed on week <%= order.at_week%></li>
+	<li>Demand from <%= @role.downstream.name %>: <%= order.amount%>, placed on week <%= order.at_week%></li>
 <% end %>
 </ul>
 

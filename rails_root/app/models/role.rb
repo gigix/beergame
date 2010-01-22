@@ -10,8 +10,8 @@ class Role < ActiveRecord::Base
   def place_order(amount)
     return if order_placed?
     update_attributes(:order_placed => true)
-    order = placed_orders.create!(:amount => amount, :at_week => game.current_week)
-    upstream.inbox_orders.push(order)
+    order = placed_orders.create!(:amount => amount, :at_week => current_week)
+    upstream.inbox_orders << order
     game.order_placed()
   end
   
@@ -28,15 +28,12 @@ class Role < ActiveRecord::Base
   end
   
   def handle_received_order order
-    received_order = received_orders.create!(:amount => order.amount, :at_week => current_week)
+    order.update_attributes(:at_week => current_week)
+    received_orders.push(order)
     inbox_orders.delete(order)
   end
   
   def current_week
     game.current_week
-  end
-  
-  def information_delay
-    game.information_delay
   end
 end

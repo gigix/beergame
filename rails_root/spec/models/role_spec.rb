@@ -38,19 +38,16 @@ describe Role do
     end
     
     it 'pass current week after order placing finished' do
-      all_roles_place_order
+      [@consumer, @wholesaler, @distributor, @factory].each{|role|
+        role.place_order(100)
+      }
       @game.reload
       @game.current_week.should == 2
-      consumer = @game.roles.first
-      consumer.should be_order_placed
-      consumer.placed_orders.size.should == 2
-      consumer.placed_orders[1].amount.should == 8
-      consumer.placed_orders[1].at_week.should == 2
     end
   end
   
   describe :update_status do
-    it 'should be able to place order again as week passed' do
+    it 'should be able to place order again as status updated' do
       @retailer.place_order(20)
       @retailer.update_status
       @retailer.place_order(50)
@@ -59,21 +56,15 @@ describe Role do
       @retailer.placed_orders[1].amount.should == 50
     end
     
-    it 'place order from inbox to received_order' do
+    it 'place order from inbox to received_order as week passed' do
       @retailer.place_order(20)
       @wholesaler.inbox_orders.size.should == 1
       @game.update_attributes(:current_week => 3)
-      @game.reload
       @wholesaler.update_status
       @wholesaler.inbox_orders.size.should == 0
-      @wholesaler.received_orders.size.should == 1
+      orders = Order.find(:all, :conditions => {:amount => 20, :sender_id => @retailer, :receiver_id => @wholesaler})
+      orders.size.should == 1
+      orders[0].at_week.should == 3
     end
   end  
-  
-  private
-    def all_roles_place_order
-      [@consumer, @retailer, @wholesaler, @distributor, @factory].each{|role|
-        role.place_order(100)
-      }
-    end
 end

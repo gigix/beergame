@@ -3,17 +3,22 @@ class Game < ActiveRecord::Base
   attr_accessor :roles_placed_order
   
   def self.create_with_roles(name, role_names)
-    game = create!(:name => name, :current_week => 1, :information_delay => 2, :shipping_delay => 2)
+    game = create!(:name => name, :current_week => 1)
     
     last_role = game.roles.create!(:name => 'consumer')
     role_names.push('brewery').each do |role_name| 
-      upper_role = game.roles.create!(:name => role_name, :playable => true)
+      upper_role = game.roles.create!(:name => role_name, :playable => true, :information_delay => 2)
       last_role.update_attributes(:upstream => upper_role)
       last_role = upper_role
     end
     
-    last_role.update_attributes(:playable => false)
-    game.roles.first.place_order 4
+    last_role.update_attributes(:playable => false, :information_delay => 1)
+    game.roles[1].update_attributes(:information_delay => 0)
+    
+    game.roles[1..game.roles.length-1].each{ |role|
+      role.received_orders.create!(:amount => 4, :at_week => 1, :sender_id => role.downstream)
+    }
+    
     game
   end
   
@@ -35,5 +40,9 @@ class Game < ActiveRecord::Base
       role.update_status
     }
     roles.first.place_order 8
+  end
+  
+  def all_roles_receive_order
+    
   end
 end
