@@ -64,11 +64,11 @@ describe Game do
       @game.current_week.should == 2
     end
     
-    it 'the role nearest to the consumer should receive the order from consumer' do
+    it 'the requirement from consumer should be doubled from the 2nd week' do
       all_roles_place_order 
       
       retailer = @game.roles[1]
-      retailer.received_orders.last.amount.should == 8
+      retailer.received_orders.last.amount.should ==  2 * retailer.received_orders.first.amount
       retailer.received_orders.last.at_week.should == 2
     end
      
