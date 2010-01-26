@@ -4,6 +4,10 @@ class Role < ActiveRecord::Base
   has_many :inbox_orders, :class_name => 'Order', :foreign_key => 'inbox_id'
   has_many :received_orders, :class_name => 'Order', :foreign_key => 'receiver_id', :order => 'at_week'
   
+  has_many :outgoing_shipments, :class_name => 'Order', :foreign_key => 'shipper_id'
+  has_many :logistics, :class_name => 'Order', :foreign_key => 'logistics_id'
+  has_many :incoming_shipments, :class_name => 'Order', :foreign_key => 'shipment_receiver_id', :order => 'at_week'
+  
   has_one :downstream, :class_name => 'Role', :foreign_key => 'upstream_id'
   belongs_to :upstream, :class_name => 'Role', :foreign_key => 'upstream_id'
   
@@ -18,13 +22,33 @@ class Role < ActiveRecord::Base
   def update_status
     update_attributes(:order_placed => false)
     handle_inbox_orders
+    handle_logistics
   end
   
   def information_delay_arrived?
     return (current_week - 1) >= information_delay
   end
   
+  def ship(amount)
+    order = outgoing_shipments.create!(:amount => amount, :at_week => current_week)
+    update_attributes(:inventory => inventory - amount)
+    downstream.logistics << order
+  end
+  
   private
+  def handle_logistics
+    logistics.clone.each{ |order|
+      handle_incoming_shipment(order) if order.at_week == current_week - information_delay
+    }
+  end
+  
+  def handle_incoming_shipment order
+    order.update_attributes(:at_week => current_week)
+    incoming_shipments << order
+    update_attributes(:inventory => inventory + order.amount)
+    logistics.delete(order)
+  end
+  
   def handle_inbox_orders
     inbox_orders.clone.each{ |order|
       handle_received_order(order) if order.at_week == current_week - information_delay
@@ -35,6 +59,10 @@ class Role < ActiveRecord::Base
     order.update_attributes(:at_week => current_week)
     received_orders << order
     inbox_orders.delete(order)
+    
+    requested_amount = order.amount
+    shipment_amount = inventory < requested_amount ? inventory : requested_amount
+    ship(shipment_amount)
   end
   
   def current_week

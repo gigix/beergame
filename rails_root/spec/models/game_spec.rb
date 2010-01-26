@@ -28,10 +28,10 @@ describe Game do
       retailer.upstream.should == wholesaler
       wholesaler.downstream.should == retailer
     end
-    
-    it 'game places order will not increase placed_orders that belongs to role' do
-      @game.roles.each{ |role|
-        role.placed_orders.size.should == 0
+
+    it 'each role should have initial inventory after game created' do
+      @game.roles[1..@game.roles.length-1].each{ |role|
+        role.inventory.should == 12
       }
     end
     
@@ -41,6 +41,12 @@ describe Game do
         order = role.received_orders[0]
         order.amount.should == 4
         order.at_week.should == 1
+      }
+    end
+    
+    it 'game places order will not increase placed_orders that belongs to role' do
+      @game.roles.each{ |role|
+        role.placed_orders.size.should == 0
       }
     end
     
@@ -72,7 +78,7 @@ describe Game do
       retailer.received_orders.last.at_week.should == 2
     end
      
-    it 'all the other roles should keep receiving order placed by during the information delay time' do
+    it 'all the other roles should keep receiving order placed by game during the information delay time' do
       all_roles_place_order 
         
       @game.roles[2..@game.roles.size-2].each{ |role|

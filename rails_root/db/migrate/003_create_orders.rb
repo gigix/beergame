@@ -4,6 +4,9 @@ class CreateOrders < ActiveRecord::Migration
       t.integer :sender_id
       t.integer :inbox_id
       t.integer :receiver_id
+      t.integer :shipper_id
+      t.integer :logistics_id
+      t.integer :shipment_receiver_id
       t.integer :amount
       t.integer :at_week
       

@@ -7,12 +7,12 @@ class Game < ActiveRecord::Base
     
     last_role = game.roles.create!(:name => 'consumer')
     role_names.push('brewery').each do |role_name| 
-      upper_role = game.roles.create!(:name => role_name, :playable => true, :information_delay => 2)
+      upper_role = game.roles.create!(:name => role_name, :playable => true, :information_delay => 2, :shipping_delay => 2, :inventory => 12)
       last_role.update_attributes(:upstream => upper_role)
       last_role = upper_role
     end
     
-    last_role.update_attributes(:playable => false, :information_delay => 1)
+    last_role.update_attributes(:playable => false, :information_delay => 1, :shipping_delay => 1)
 
     game.roles[1..game.roles.length-1].each{ |role|
       order = role.received_orders.create!(:amount => 4, :at_week => 1)
