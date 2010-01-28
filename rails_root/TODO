@@ -9,6 +9,7 @@ AS A player, I WANT TO place orders, SO THAT I can respond to my customer
 AS A player, I WANT TO pass time to next week after everyone placed orders, SO THAT I can push the game forward
 
 ===== DOING =====
+UI tidy up
 AS A player, I WANT TO check my demand/order/inventory plots, SO THAT I can understand my situation well
 
 ===== STORIES =====
