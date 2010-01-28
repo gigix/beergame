@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<title>啤酒游戏 | <%= yield :title %></title>
+		<%= stylesheet_link_tag 'main' %>
+	</head>
+	
+	<body>
+		<div class="pageheaded" id="header">
+		      <div class="site">
+		          <div class="logo">
+		            <div style="margin-top: 0px; float: left;">啤酒游戏</div>
+					<div style="margin-top: 0px; float: left;">@ThoughtWorks</div>
+				  </div>
+				  <div class="userbox">
+					    <div class="inner">
+					      <ul class="usernav">
+					        <li>
+								<%= link_to '游戏管理', :controller => 'games' %>
+							</li>
+				        	<li><a href="#">Blah</a></li>
+						    <li><a href="#">Blah</a></li>
+						    <li><a href="#">About Me</a></li>
+				  	      </ul>
+					    </div>
+				  </div>
+			</div>
+		</div>
+		<div id='content'>
+			<%= yield %>
+		</div>
+	</body>
+</html>

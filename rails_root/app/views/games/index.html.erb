@@ -1,3 +1,5 @@
+<% title '游戏管理' %>
+
 <% form_for :game, :url => { :action => "create" } do |f| %>
 	<%= f.text_field :name %>
 	<%= submit_tag 'Create' %>

@@ -11,6 +11,8 @@
 	<%= f.submit 'Place order' %>
 <% end %>
 
+<p>Your inventory: <%= @role.inventory %></p>
+
 Your placed orders:
 <ul>
 <% @role.placed_orders.each do |order|%>
