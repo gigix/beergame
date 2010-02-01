@@ -9,6 +9,7 @@ class CreateRoles < ActiveRecord::Migration
       t.integer :shipping_delay
       t.boolean :order_placed
       t.integer :inventory
+      t.integer :backorder
       
       t.timestamps
     end

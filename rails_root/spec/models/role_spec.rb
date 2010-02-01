@@ -97,8 +97,7 @@ describe Role do
     
     it 'should ship all the inventory to the downstream if does not have enough inventory' do
       inventory = @wholesaler.inventory
-      @retailer.place_order(inventory + 10)
-      pass_delay_weeks @retailer.information_delay
+      retailer_place_order_larger_than_wholesaler_inventory
       order = @wholesaler.outgoing_shipments.first
       order.amount.should == inventory
       @wholesaler.inventory.should == 0
@@ -123,10 +122,24 @@ describe Role do
       @retailer.inventory.should == inventory + 9
     end
     
-    it 'should increate backorder if does not have enough inventory for ship' do
-
+    it 'should increase backorder if does not have enough inventory for ship' do
+      retailer_place_order_larger_than_wholesaler_inventory
+      @wholesaler.backorder.should == 10
+      retailer_place_order_larger_than_wholesaler_inventory
+      @wholesaler.backorder.should == 20
     end
     
+    it 'should make shipment according to the sum of order and backorder' do
+      retailer_place_order_larger_than_wholesaler_inventory
+      @wholesaler.backorder.should == 10
+      @wholesaler.update_attributes(:inventory => 20)
+      @retailer.place_order(12)
+      pass_delay_weeks @retailer.information_delay
+      order = @wholesaler.outgoing_shipments.last
+      order.amount.should == 20
+      @wholesaler.inventory.should == 0
+      @wholesaler.backorder.should == 2
+    end
   end  
   
   private
@@ -136,5 +149,10 @@ describe Role do
       role.update_status
       role.reload
     }
+  end
+  
+  def retailer_place_order_larger_than_wholesaler_inventory
+    @retailer.place_order(@wholesaler.inventory + 10)
+    pass_delay_weeks @retailer.information_delay
   end
 end

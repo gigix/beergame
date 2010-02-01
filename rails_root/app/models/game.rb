@@ -7,7 +7,7 @@ class Game < ActiveRecord::Base
     
     last_role = game.roles.create!(:name => 'consumer')
     role_names.push('brewery').each do |role_name| 
-      upper_role = game.roles.create!(:name => role_name, :playable => true, :information_delay => 2, :shipping_delay => 2, :inventory => 12)
+      upper_role = game.roles.create!(:name => role_name, :playable => true, :information_delay => 2, :shipping_delay => 2, :inventory => 12, :backorder => 0)
       last_role.update_attributes(:upstream => upper_role)
       last_role = upper_role
     end

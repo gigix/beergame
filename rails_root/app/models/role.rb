@@ -29,9 +29,12 @@ class Role < ActiveRecord::Base
     return (current_week - 1) >= information_delay
   end
   
-  def ship(amount)
-    order = outgoing_shipments.create!(:amount => amount, :at_week => current_week)
-    update_attributes(:inventory => inventory - amount)
+  def ship(order_amount)
+    requested_amount = order_amount + backorder
+    shipment_amount = inventory < requested_amount ? inventory : requested_amount
+    new_backorder = inventory < requested_amount ? requested_amount - inventory : 0
+    order = outgoing_shipments.create!(:amount => shipment_amount, :at_week => current_week)
+    update_attributes(:inventory => inventory - shipment_amount, :backorder => new_backorder)
     downstream.logistics << order
   end
   
@@ -60,9 +63,7 @@ class Role < ActiveRecord::Base
     received_orders << order
     inbox_orders.delete(order)
     
-    requested_amount = order.amount
-    shipment_amount = inventory < requested_amount ? inventory : requested_amount
-    ship(shipment_amount)
+    ship(order.amount)
   end
   
   def current_week
