@@ -38,7 +38,7 @@ class Game < ActiveRecord::Base
     update_attributes(:current_week => current_week+1)
     
     roles[1].received_orders.create!(:amount => 8, :at_week => current_week)
-    roles[1].incoming_shipments.create!(:amount => 4, :at_week => current_week) unless roles[1].information_delay_arrived?
+    roles[1].incoming_shipments.create!(:amount => 4, :at_week => current_week) unless roles[1].shipping_delay_arrived?
     roles[1].update_status
     
     roles[2..roles.length-2].each{ |role|

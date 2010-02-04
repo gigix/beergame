@@ -117,19 +117,7 @@ describe Role do
       @retailer.logistics.length.should == 1
       pass_delay_weeks @retailer.shipping_delay
       @retailer.logistics.length.should == 0
-      shipments = Order.find(:all, :conditions => {:amount => 8, :shipper_id => @wholesaler, :shipment_receiver_id => @retailer})
-      shipments.size.should == 1
-      shipments[0].amount.should == 8
-    end
-
-    it 'incoming shipment should increase the total inventory' do
-      inventory = @retailer.inventory
-      @retailer.place_order(9)
-      pass_delay_weeks @retailer.information_delay
-      pass_delay_weeks @retailer.shipping_delay
-      shipment = Order.find(:all, :conditions => {:shipment_receiver_id => @retailer, :at_week => 5})
-      shipment.first.amount.should ==9
-      @retailer.inventory.should == inventory + 9
+      @retailer.incoming_shipments.last.amount.should == 8
     end
     
     it 'should increase backorder if does not have enough inventory for ship' do

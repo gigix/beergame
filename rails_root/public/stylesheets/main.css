@@ -18,7 +18,12 @@ body {
 	font-variant:normal;
 	font-weight:normal;
 	line-height:normal;
-	text-align:center;
+	text-align:left;
+}
+
+p {
+	margin-top: .4em;
+	margin-bottom: .7em;
 }
 
 #content {

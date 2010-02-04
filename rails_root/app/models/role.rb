@@ -21,8 +21,8 @@ class Role < ActiveRecord::Base
   
   def update_status
     update_attributes(:order_placed => false)
-    handle_inbox_orders
     handle_logistics
+    handle_inbox_orders
   end
   
   def information_delay_arrived?
