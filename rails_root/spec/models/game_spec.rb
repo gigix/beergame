@@ -30,15 +30,28 @@ describe Game do
     end
 
     it 'each role should have initial inventory after game created' do
-      @game.roles[1..@game.roles.length-1].each{ |role|
+      @game.roles[1..@game.roles.length-2].each{ |role|
         role.inventory.should == 12
       }
+    end
+    
+    it 'brewer should have a large inventory which is max int value' do
+      @game.roles.last.inventory.should == Game::MAX_INVENTORY
     end
     
     it 'all roles should receive order after game created' do
       @game.roles[1..@game.roles.size-1].each{ |role|
         role.received_orders.size.should == 1
         order = role.received_orders[0]
+        order.amount.should == 4
+        order.at_week.should == 1
+      }
+    end
+    
+    it 'all roles should receive shipment after game created' do
+      @game.roles[1..@game.roles.size-2].each{ |role|
+        role.incoming_shipments.size.should == 1
+        order = role.incoming_shipments[0]
         order.amount.should == 4
         order.at_week.should == 1
       }
@@ -53,6 +66,7 @@ describe Game do
     it 'orders placed by game should not have sender' do
       @retailer.received_orders.first.sender.should == nil
     end
+
   end
   
   describe 'self.order_placed' do
@@ -78,20 +92,18 @@ describe Game do
       retailer.received_orders.last.at_week.should == 2
     end
      
-    it 'all the other roles should keep receiving order placed by game during the information delay time' do
-      all_roles_place_order 
-        
+    it 'the roles except for customer should keep receiving order placed by game during the information delay time' do
+      all_roles_place_order  
       @game.roles[2..@game.roles.size-2].each{ |role|
         role.received_orders.size.should == 2
         order = role.received_orders[1]
         order.amount.should == 4
         order.at_week.should == 2
         order.sender.should == nil
-      }
-      
+      } 
     end
     
-    it 'all the other roles should receive order from downstream after information delay' do
+    it 'the roles except for customer should receive order from downstream after information delay' do
       all_roles_place_order
       @brewery.received_orders.last.amount.should == 100
       
@@ -101,6 +113,25 @@ describe Game do
       @game.reload
       @game.current_week.should == 3
       @wholesaler.received_orders.last.amount.should == 100
+    end
+    
+    it 'the roles except for brewery should receive shipment placed by game during the information delay' do
+      all_roles_place_order
+      @factory.logistics.last.amount.should == 100
+      @game.roles[1..@game.roles.size-2].each{ |role|
+        role.incoming_shipments.size.should == 2
+        shipment = role.incoming_shipments[1]
+        shipment.amount.should == 4
+        shipment.at_week.should == 2
+        shipment.sender.should == nil
+      }
+    end
+    
+    it 'the roles should receive shipment from upstream after the information delay and shipping delay' do
+      2.times{
+        all_roles_place_order
+      }
+      @factory.incoming_shipments.last.amount.should == 100
     end
   end
   

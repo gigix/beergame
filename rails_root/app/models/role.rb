@@ -29,6 +29,10 @@ class Role < ActiveRecord::Base
     return (current_week - 1) >= information_delay
   end
   
+  def shipping_delay_arrived?
+    return (current_week - 1) >= shipping_delay + upstream.information_delay
+  end
+  
   def ship(order_amount)
     requested_amount = order_amount + backorder
     shipment_amount = inventory < requested_amount ? inventory : requested_amount
@@ -41,7 +45,7 @@ class Role < ActiveRecord::Base
   private
   def handle_logistics
     logistics.clone.each{ |order|
-      handle_incoming_shipment(order) if order.at_week == current_week - information_delay
+      handle_incoming_shipment(order) if order.at_week == current_week - shipping_delay
     }
   end
   

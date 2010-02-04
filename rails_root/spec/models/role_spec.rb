@@ -41,6 +41,15 @@ describe Role do
     end
   end
   
+  describe :shipping_delay_arrive do
+    it 'equals the sum of shippment delay of current role and information delay of upstream' do
+      @wholesaler.should_not be_shipping_delay_arrived
+      @game.update_attributes(:current_week => 1 + @wholesaler.shipping_delay + @distributor.information_delay)
+      @wholesaler.reload
+      @wholesaler.should be_shipping_delay_arrived
+    end
+  end
+  
   describe :ship do
     it 'should equals outgoing shipment' do
       @retailer.ship(8)
@@ -108,9 +117,9 @@ describe Role do
       @retailer.logistics.length.should == 1
       pass_delay_weeks @retailer.shipping_delay
       @retailer.logistics.length.should == 0
-      orders = Order.find(:all, :conditions => {:amount => 8, :shipper_id => @wholesaler, :shipment_receiver_id => @retailer})
-      orders.size.should == 1
-      orders[0].amount.should == 8
+      shipments = Order.find(:all, :conditions => {:amount => 8, :shipper_id => @wholesaler, :shipment_receiver_id => @retailer})
+      shipments.size.should == 1
+      shipments[0].amount.should == 8
     end
 
     it 'incoming shipment should increase the total inventory' do
@@ -118,7 +127,8 @@ describe Role do
       @retailer.place_order(9)
       pass_delay_weeks @retailer.information_delay
       pass_delay_weeks @retailer.shipping_delay
-      @retailer.incoming_shipments.first.amount.should ==9
+      shipment = Order.find(:all, :conditions => {:shipment_receiver_id => @retailer, :at_week => 5})
+      shipment.first.amount.should ==9
       @retailer.inventory.should == inventory + 9
     end
     
