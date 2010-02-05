@@ -91,6 +91,11 @@ describe Game do
       retailer.received_orders.last.amount.should ==  2 * retailer.received_orders.first.amount
       retailer.received_orders.last.at_week.should == 2
     end
+    
+    it 'the roles nearest to customer should make shipment from the 2nd week' do
+      all_roles_place_order
+      @game.roles[1].outgoing_shipments.size.should == 1
+    end
      
     it 'the roles except for customer should keep receiving order placed by game during the information delay time' do
       all_roles_place_order  

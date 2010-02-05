@@ -97,7 +97,7 @@ describe Role do
     it 'should make shippment according to the order amount if has enough inventory' do
       @retailer.place_order(8)
       @wholesaler.outgoing_shipments.size.should == 0
-      pass_delay_weeks @retailer.information_delay
+      pass_delay_weeks @wholesaler.information_delay
       wholesaled_outgoing_shipment = @wholesaler.outgoing_shipments.first
       wholesaled_outgoing_shipment.amount.should == 8
       retailer_logistics = @retailer.logistics.first
@@ -132,7 +132,7 @@ describe Role do
       @wholesaler.backorder.should == 10
       @wholesaler.update_attributes(:inventory => 20)
       @retailer.place_order(12)
-      pass_delay_weeks @retailer.information_delay
+      pass_delay_weeks @wholesaler.information_delay
       order = @wholesaler.outgoing_shipments.last
       order.amount.should == 20
       @wholesaler.inventory.should == 0
@@ -151,6 +151,6 @@ describe Role do
   
   def retailer_place_order_larger_than_wholesaler_inventory
     @retailer.place_order(@wholesaler.inventory + 10)
-    pass_delay_weeks @retailer.information_delay
+    pass_delay_weeks @wholesaler.information_delay
   end
 end

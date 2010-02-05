@@ -14,7 +14,10 @@ class Game < ActiveRecord::Base
     end
     
     last_role.update_attributes(:playable => false, :information_delay => 1, :inventory => Game::MAX_INVENTORY)
+    
+    game.roles[1].update_attributes(:information_delay => 0)
     game.roles[game.roles.length-2].update_attributes(:shipping_delay => 1)
+    
     game.roles[1..game.roles.length-1].each{ |role|
       role.received_orders.create!(:amount => 4, :at_week => 1)
       role.incoming_shipments.create!(:amount => 4, :at_week => 1)
@@ -37,7 +40,8 @@ class Game < ActiveRecord::Base
   def pass_week
     update_attributes(:current_week => current_week+1)
     
-    roles[1].received_orders.create!(:amount => 8, :at_week => current_week)
+    customer_place_order
+    
     roles[1].incoming_shipments.create!(:amount => 4, :at_week => current_week) unless roles[1].shipping_delay_arrived?
     roles[1].update_status
     
@@ -53,6 +57,11 @@ class Game < ActiveRecord::Base
     
     roles.last.received_orders.create!(:amount => 4, :at_week => current_week) unless roles.last.information_delay_arrived?
     roles.last.update_status
+  end
+
+  private 
+  def customer_place_order
+    roles[1].inbox_orders.create!(:amount => 8, :at_week => current_week)
   end
 
 end
