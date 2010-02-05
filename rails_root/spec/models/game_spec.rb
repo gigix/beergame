@@ -50,8 +50,8 @@ describe Game do
     
     it 'all roles should receive shipment after game created' do
       @game.roles[1..@game.roles.size-2].each{ |role|
-        role.incoming_shipments.size.should == 1
-        order = role.incoming_shipments[0]
+        role.received_shipments.size.should == 1
+        order = role.received_shipments[0]
         order.amount.should == 4
         order.at_week.should == 1
       }
@@ -90,12 +90,10 @@ describe Game do
       retailer = @game.roles[1]
       retailer.received_orders.last.amount.should ==  2 * retailer.received_orders.first.amount
       retailer.received_orders.last.at_week.should == 2
+      
+      retailer.placed_shipments.last.amount.should == retailer.received_orders.last.amount
     end
-    
-    it 'the roles nearest to customer should make shipment from the 2nd week' do
-      all_roles_place_order
-      @game.roles[1].outgoing_shipments.size.should == 1
-    end
+
      
     it 'the roles except for customer should keep receiving order placed by game during the information delay time' do
       all_roles_place_order  
@@ -122,10 +120,9 @@ describe Game do
     
     it 'the roles except for brewery should receive shipment placed by game during the information delay' do
       all_roles_place_order
-      @factory.logistics.last.amount.should == 100
       @game.roles[1..@game.roles.size-2].each{ |role|
-        role.incoming_shipments.size.should == 2
-        shipment = role.incoming_shipments[1]
+        role.received_shipments.size.should == 2
+        shipment = role.received_shipments[1]
         shipment.amount.should == 4
         shipment.at_week.should == 2
         shipment.sender.should == nil
@@ -136,7 +133,7 @@ describe Game do
       2.times{
         all_roles_place_order
       }
-      @factory.incoming_shipments.last.amount.should == 100
+      @factory.received_shipments.last.amount.should == 100
     end
   end
   
