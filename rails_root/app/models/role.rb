@@ -50,8 +50,7 @@ class Role < ActiveRecord::Base
   end
   
   def handle_incoming_shipment order
-    order.update_attributes(:at_week => current_week)
-    incoming_shipments << order
+    incoming_shipments.create!(:amount => order.amount, :at_week => current_week, :shipper_id => order.shipper_id)
     update_attributes(:inventory => inventory + order.amount)
     logistics.delete(order)
   end
@@ -64,7 +63,7 @@ class Role < ActiveRecord::Base
   
   def handle_received_order order
     order.update_attributes(:at_week => current_week)
-    received_orders << order
+    received_orders.create!(:amount => order.amount, :at_week => current_week, :sender_id => order.sender_id)
     inbox_orders.delete(order)
     
     ship(order.amount)

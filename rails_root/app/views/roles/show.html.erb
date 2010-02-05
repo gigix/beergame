@@ -28,7 +28,7 @@
 <p>Your outgoing_shipments</p>
 <ul>
 	<% @role.outgoing_shipments.each do |shipment|%>
-		<li><%= shipment.amount%></li>
+		<li><%= shipment.amount%> on week <%= shipment.at_week%></li>
 	<% end %>
 </ul>
 
@@ -45,19 +45,5 @@
 	<% @role.incoming_shipments.each do|shipment|%>
 		<% shipment_shipper = shipment.shipper.nil?? "game" : shipment.shipper.name%>
 		<li> <%= shipment.amount%> shipped from <%= shipment_shipper%> arrived on week <%= shipment.at_week%></li>
-	<% end %>
-</ul>
-
-<p>Your inbox orders:</p>
-<ul>
-	<% @role.inbox_orders.each do |order|%>
-		<li>Demand: <%= order.amount%>, placed on week <%= order.at_week%></li>
-	<% end %>
-</ul>
-
-<p>Your logistics</p>
-<ul>
-	<% @role.logistics.each do|shipment|%>
-		<li><%= shipment.amount%> on week <%= shipment.at_week%></li>
 	<% end %>
 </ul>
