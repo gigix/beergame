@@ -8,10 +8,10 @@ AS A player, I WANT TO place orders, SO THAT I can respond to my customer
 
 AS A player, I WANT TO pass time to next week after everyone placed orders, SO THAT I can push the game forward
 
+AS A player, I WANT TO check my demand/order/inventory plots, SO THAT I can understand my situation well
 ===== DOING =====
 UI tidy up
-AS A player, I WANT TO check my demand/order/inventory plots, SO THAT I can understand my situation well
-
+Refactor the tests
 ===== STORIES =====
 
 AS AN instructor, I WANT TO configure a game with holding/backorder costs, SO THAT I can make the game more realistic
@@ -22,3 +22,7 @@ AS AN instructor, I WANT TO check the team's costs in total, SO THAT I can debri
 AS AN instructor, I WANT TO configure a role in a game with a password, SO THAT I can control roles assigned to players
 
 ===== DEFECTS =====
+
+===== Tech tasks ===
+
+Re-organize the test data with fixtures, so that we never need to call role.reload in the tests any more
