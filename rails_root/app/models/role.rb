@@ -1,11 +1,9 @@
 class Role < ActiveRecord::Base
   belongs_to :game
   has_many :placed_orders, :class_name => 'Order', :foreign_key => 'sender_id'
-  has_many :outbox_orders, :class_name => 'Order', :foreign_key => 'outbox_id'
   has_many :received_orders, :class_name => 'Order', :foreign_key => 'receiver_id'
   
   has_many :placed_shipments, :class_name => 'Order', :foreign_key => 'shipper_id'
-  has_many :outbox_shipments, :class_name => 'Order', :foreign_key => 'ship_outbox_id'
   has_many :received_shipments, :class_name => 'Order', :foreign_key => 'shipment_receiver_id'
   
   has_one :downstream, :class_name => 'Role', :foreign_key => 'upstream_id'
@@ -58,30 +56,22 @@ class Role < ActiveRecord::Base
   
   def deliver_placed_orders
     placed_orders.each{ |order|
-      outbox_orders << order if order.at_week == current_week - information_delay
+      deliver_order order if order.at_week == current_week - information_delay
     }
-    deliver_outbox_orders
   end
   
-  def deliver_outbox_orders
-    return if outbox_orders.empty?
-    order = outbox_orders.first
-    upstream.received_orders.create!(:amount => order.amount, :at_week => current_week, :outbox_id => order.sender_id)
-    outbox_orders.delete(order)
+  def deliver_order order
+    upstream.received_orders.create!(:amount => order.amount, :at_week => current_week)
   end
   
   def deliver_placed_shipments
     placed_shipments.each{ |shipment|
-      outbox_shipments << shipment if shipment.at_week == current_week - shipping_delay
+      deliver_shipement shipment if shipment.at_week == current_week - shipping_delay
     }
-    deliver_outbox_shipments
   end
   
-  def deliver_outbox_shipments
-    return if outbox_shipments.empty?
-    shipment = outbox_shipments.first
-    downstream.received_shipments.create!(:amount => shipment.amount, :at_week => current_week, :ship_outbox_id => shipment.shipper_id)
-    outbox_shipments.delete(shipment)
+  def deliver_shipement shipment
+    downstream.received_shipments.create!(:amount => shipment.amount, :at_week => current_week)
   end
 
   def current_week

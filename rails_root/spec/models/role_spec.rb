@@ -101,7 +101,6 @@ describe Role do
     it 'deliver shipment when shipping delay arrives' do
       pass_delay_weeks @wholesaler.shipping_delay
       @retailer.received_shipments.last.amount.should == 4
-      @retailer.received_shipments.last.ship_outbox_id.should == @retailer.upstream.id
     end
     
     it 'should make shipment according to the sum of order and backorder' do

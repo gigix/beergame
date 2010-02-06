@@ -2,48 +2,60 @@
 <h2><%= @role.name %></h2>
 
 <h2>Current Week: <%=@game.current_week%></h2>
-<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create') )do |f| %>
-	<% f.fields_for :placed_orders do |order| %>
-		<%= order.text_field :amount %>
+
+
+<div class="basic_information">
+	You have shipped <%= @role.placed_shipments.last.amount %> unit to <%= @role.downstream.name %>
+	<table>
+		<tr>
+			<td>Order from customer: <%= @role.received_orders.last.amount %></td>
+			<td>Current inventory: <%= @role.inventory %></td>
+		</tr>
+		<tr>
+			<td>Shipment received: <%= @role.received_shipments.last.amount %></td>
+			<td>Current Backorder: <%= @role.backorder %></td>
+		</tr>	
+	</table>
+</div>
+<% if !@role.order_placed? %>
+	<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create') )do |f| %>
+		<% f.fields_for :placed_orders do |order| %>
+			Enter the number of units to be purchased from <%= @role.upstream.name %>: <%= order.text_field :amount %>
+		<% end %>
+		<%= f.hidden_field :id, :value => @role.id %>
+		<%= f.hidden_field :game_id, :value => @game.id %>
+		<%= f.submit 'Place order' %>
 	<% end %>
-	<%= f.hidden_field :id, :value => @role.id %>
-	<%= f.hidden_field :game_id, :value => @game.id %>
-	<%= f.submit 'Place order' %>
+<% else %>
+<p>PLEASE WAIT FOR ALL THE OTHER PARTNERS TO COMPLETE THEIR WEEKLY ORDERING AND SHIPPING.</p>
 <% end %>
 
-
-
-<p>Your inventory: <%= @role.inventory %></p>
-
-<p>Your backorder: <%= @role.backorder %></p>
-
-
-<p>Your placed orders:</p>
-<ul>
-	<% @role.placed_orders.each do |order|%>
-		<li><%= order.amount%> placed</li>
-	<% end %>
-</ul>
-
-<p>Your placed shipments</p>
-<ul>
-	<% @role.placed_shipments.each do |shipment|%>
-		<li><%= shipment.amount%> on week <%= shipment.at_week%></li>
-	<% end %>
-</ul>
-
-<p>Your received orders:</p>
-<ul>
-	<% @role.received_orders.each do |order|%>
-		<% order_sender = order.sender.nil?? "game" : order.sender.name %>
-		<li>Demand from <%= order_sender %>: <%= order.amount%>, placed on week <%= order.at_week%></li>
-	<% end %>
-</ul>
-
-<p>Your received shipments</p>
-<ul>
-	<% @role.received_shipments.each do|shipment|%>
-		<% shipment_shipper = shipment.shipper.nil?? "game" : shipment.shipper.name%>
-		<li> <%= shipment.amount%> shipped from <%= shipment_shipper%> arrived on week <%= shipment.at_week%></li>
-	<% end %>
-</ul>
+<div class="history">
+	<p>Your placed orders:</p>
+	<ul>
+		<% @role.placed_orders.each do |order|%>
+			<li><%= order.amount%> placed</li>
+		<% end %>
+	</ul>
+	
+	<p>Your placed shipments</p>
+	<ul>
+		<% @role.placed_shipments.each do |shipment|%>
+			<li><%= shipment.amount%> on week <%= shipment.at_week%></li>
+		<% end %>
+	</ul>
+	
+	<p>Your received orders:</p>
+	<ul>
+		<% @role.received_orders.each do |order|%>
+			<li>Demand : <%= order.amount%>, placed on week <%= order.at_week%></li>
+		<% end %>
+	</ul>
+	
+	<p>Your received shipments</p>
+	<ul>
+		<% @role.received_shipments.each do|shipment|%>
+			<li>Shipped : <%= shipment.amount%>, arrived on week <%= shipment.at_week%></li>
+		<% end %>
+	</ul>
+</div>
