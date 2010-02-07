@@ -135,6 +135,29 @@ describe Game do
       }
       @factory.received_shipments.last.amount.should == 100
     end
+    
+    it 'integration test' do
+      [@retailer, @wholesaler, @distributor, @factory].each{|role|
+        role.reload
+        role.place_order(5)
+      }
+      [@retailer, @wholesaler, @distributor, @factory].each{|role|
+        role.reload
+        role.place_order(6)
+      }
+      [@retailer, @wholesaler, @distributor, @factory].each{|role|
+        role.reload
+        role.place_order(7)
+      }
+      [@retailer, @wholesaler, @distributor, @factory].each{|role|
+        role.reload
+        role.place_order(8)
+      }
+      @retailer.reload
+      @retailer.received_shipments.last.amount.should == 5
+      @retailer.inventory.should == 0
+      @retailer.backorder.should == 3
+    end
   end
   
   private

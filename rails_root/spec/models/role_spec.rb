@@ -45,21 +45,28 @@ describe Role do
     end
   end
   
-  describe :ship do
-    it 'should equals outgoing shipment' do
-      @retailer.ship(8)
-      order = @retailer.placed_shipments.last
-      order.amount.should == 8
-      order.shipper.should == @retailer
-    end
-    
-    it 'should decrease the inventory' do
-      inventory = @retailer.inventory
-      @retailer.ship(8)
-      @retailer.inventory.should == inventory - 8
+  describe :deliver_placed_orders do
+    it 'should deliver order after information delay arrived' do
+      @retailer.place_order(20)
+      @retailer.placed_orders.size.should == 1
+      @game.update_attributes(:current_week => @game.current_week + @retailer.information_delay)
+      @retailer.reload
+      @retailer.deliver_placed_orders
+      @wholesaler.reload
+      @wholesaler.received_orders.last.amount.should == 20
     end
   end
   
+  describe :deliver_placed_shipments do
+    it 'deliver shipment when shipping delay arrives' do
+      @wholesaler.placed_shipments.create!(:amount => 17, :at_week => 7)
+      @game.update_attributes(:current_week => 7 + @wholesaler.shipping_delay)
+      @wholesaler.reload
+      @wholesaler.deliver_placed_shipments
+      @retailer.reload
+      @retailer.received_shipments.last.amount.should == 17
+    end
+  end
   
   describe :update_status do
     it 'should be able to place order again as status updated' do
@@ -71,59 +78,39 @@ describe Role do
       @retailer.placed_orders[1].amount.should == 50
     end
     
-    it 'deliver order after information delay arrived' do
-      @retailer.place_order(20)
-      @retailer.placed_orders.size.should == 1
-      pass_delay_weeks @retailer.information_delay
-      @wholesaler.received_orders.last.amount.should == 20
-    end
-    
     it 'should make shippment according to the order amount if has enough inventory' do
-      @retailer.place_order(7)
-      pass_delay_weeks @retailer.information_delay
-      @wholesaler.received_orders.last.amount.should == 7
-      orders = Order.find(:all, :conditions => {:amount => 7, :shipper_id => @wholesaler, :at_week => 1+@retailer.information_delay})
-      orders.size.should == 1
+      inventory = @wholesaler.inventory
+      @game.update_attributes(:current_week => 9)
+      @wholesaler.reload
+      @wholesaler.received_orders.create!(:amount => 7)
+      @wholesaler.received_shipments.create!(:amount => 5)
+      @wholesaler.update_status
+      placed_shipment = @wholesaler.placed_shipments.last
+      placed_shipment.amount.should == 7
+      placed_shipment.at_week.should == 9 
+      placed_shipment.shipper.should == @wholesaler
+      @wholesaler.inventory.should == inventory - 7 + 5
     end
     
     it 'should ship all the inventory to the downstream if does not have enough inventory and backorder should be increased' do
       inventory = @wholesaler.inventory
-      @retailer.place_order(@wholesaler.inventory + 100)
-      pass_delay_weeks @retailer.information_delay
-      @wholesaler.reload
-      received_shipment = @wholesaler.received_shipments.last
+      @wholesaler.received_orders.create!(:amount => inventory + 100)
+      @wholesaler.received_shipments.create!(:amount => 5)
+      @wholesaler.update_status
       placed_shipment = @wholesaler.placed_shipments.last
-      placed_shipment.amount.should == inventory + received_shipment.amount
+      placed_shipment.amount.should == inventory + 5
       @wholesaler.inventory.should == 0
-      @wholesaler.backorder.should == 100 - received_shipment.amount
+      @wholesaler.backorder.should == 95
     end
-    
-    it 'deliver shipment when shipping delay arrives' do
-      pass_delay_weeks @wholesaler.shipping_delay
-      @retailer.received_shipments.last.amount.should == 4
-    end
-    
+
     it 'should make shipment according to the sum of order and backorder' do
       @wholesaler.update_attributes(:backorder => 10, :inventory => 28)
-      @retailer.place_order(6)
-      pass_delay_weeks @retailer.information_delay
-      @wholesaler.reload
-      shipment = @wholesaler.received_shipments.last
+      @wholesaler.received_orders.create!(:amount => 6)
+      @wholesaler.received_shipments.create!(:amount => 7)
+      @wholesaler.update_status
       order = @wholesaler.placed_shipments.last
       order.amount.should == 16
-      @wholesaler.inventory.should == 28 - 16 + shipment.amount
+      @wholesaler.inventory.should == 19
     end
   end  
-  
-  private
-  def pass_delay_weeks delay
-    @game.update_attributes(:current_week => @game.current_week + delay)
-    @game.reload
-    @game.roles.each{ |role| 
-      role.update_status
-    }
-    @game.roles.each{ |role|
-      role.reload
-    }
-  end
 end

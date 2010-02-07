@@ -20,8 +20,6 @@ class Role < ActiveRecord::Base
     update_attributes(:order_placed => false)
     handle_received_shipments
     handle_received_orders
-    deliver_placed_shipments
-    deliver_placed_orders
   end
   
   def information_delay_arrived?
@@ -32,12 +30,16 @@ class Role < ActiveRecord::Base
     return (current_week - 1) >= shipping_delay
   end
   
-  def ship(order_amount)
-    requested_amount = order_amount + backorder
-    shipment_amount = inventory < requested_amount ? inventory : requested_amount
-    new_backorder = inventory < requested_amount ? requested_amount - inventory : 0
-    order = placed_shipments.create!(:amount => shipment_amount, :at_week => current_week)
-    update_attributes(:inventory => inventory - shipment_amount, :backorder => new_backorder)
+  def deliver_placed_shipments
+    placed_shipments.each{ |shipment|
+      deliver_shipement shipment if shipment.at_week == current_week - shipping_delay
+    }
+  end
+  
+  def deliver_placed_orders
+    placed_orders.each{ |order|
+      deliver_order order if order.at_week == current_week - information_delay
+    }
   end
   
   private
@@ -53,25 +55,21 @@ class Role < ActiveRecord::Base
     shipment = received_shipments.last
     update_attributes(:inventory => inventory + shipment.amount)
   end
-  
-  def deliver_placed_orders
-    placed_orders.each{ |order|
-      deliver_order order if order.at_week == current_week - information_delay
-    }
-  end
-  
+
   def deliver_order order
     upstream.received_orders.create!(:amount => order.amount, :at_week => current_week)
   end
   
-  def deliver_placed_shipments
-    placed_shipments.each{ |shipment|
-      deliver_shipement shipment if shipment.at_week == current_week - shipping_delay
-    }
-  end
-  
   def deliver_shipement shipment
     downstream.received_shipments.create!(:amount => shipment.amount, :at_week => current_week)
+  end
+  
+  def ship(order_amount)
+    requested_amount = order_amount + backorder
+    shipment_amount = inventory < requested_amount ? inventory : requested_amount
+    new_backorder = inventory < requested_amount ? requested_amount - inventory : 0
+    order = placed_shipments.create!(:amount => shipment_amount, :at_week => current_week)
+    update_attributes(:inventory => inventory - shipment_amount, :backorder => new_backorder)
   end
 
   def current_week

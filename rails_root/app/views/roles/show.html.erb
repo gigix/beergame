@@ -31,6 +31,25 @@
 <% end %>
 
 <div class="history">
+	<table>
+		<tr>
+			<td>Week</td>
+			<td>Placed order</td>
+			<td>Placed shipment</td>
+			<td>Received order</td>
+			<td>Received shipment</td>
+		</tr>
+			<% (0..@role.received_orders.length-1).to_a.each{|i|%>
+				<tr>
+					<td><%= i+1 %></td>
+					<td><%= @role.placed_orders[i].nil?? 0 : @role.placed_orders[i].amount %></td>
+					<td><%= @role.placed_shipments[i].amount %></td>
+					<td><%= @role.received_orders[i].amount %></td>
+					<td><%= @role.received_shipments[i].amount %></td>
+				</tr>	
+			<% } %>
+	</table>
+	
 	<p>Your placed orders:</p>
 	<ul>
 		<% @role.placed_orders.each do |order|%>
