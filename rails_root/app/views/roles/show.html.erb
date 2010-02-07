@@ -49,32 +49,4 @@
 				</tr>	
 			<% } %>
 	</table>
-	
-	<p>Your placed orders:</p>
-	<ul>
-		<% @role.placed_orders.each do |order|%>
-			<li><%= order.amount%> placed</li>
-		<% end %>
-	</ul>
-	
-	<p>Your placed shipments</p>
-	<ul>
-		<% @role.placed_shipments.each do |shipment|%>
-			<li><%= shipment.amount%> on week <%= shipment.at_week%></li>
-		<% end %>
-	</ul>
-	
-	<p>Your received orders:</p>
-	<ul>
-		<% @role.received_orders.each do |order|%>
-			<li>Demand : <%= order.amount%>, placed on week <%= order.at_week%></li>
-		<% end %>
-	</ul>
-	
-	<p>Your received shipments</p>
-	<ul>
-		<% @role.received_shipments.each do|shipment|%>
-			<li>Shipped : <%= shipment.amount%>, arrived on week <%= shipment.at_week%></li>
-		<% end %>
-	</ul>
 </div>
