@@ -1,23 +1,23 @@
-<h1><%= @game.name %></h1>
-<h2><%= @role.name %></h2>
 
-<h2>Current Week: <%=@game.current_week%></h2>
+<h2>你正在玩的游戏是：<%= @game.name %>，你所扮演的角色是：<%= @role.name %></h2>
+
+<h2>现在是第<%=@game.current_week%>个星期</h2>
 
 
 <div class="basic_information">
-	You have shipped <%= @role.placed_shipments.last.amount %> unit to <%= @role.downstream.name %>
+	你已经向<%= @role.downstream.name %>发送了<%= @role.placed_shipments.last.amount %>个单位的货物 
 	<table>
 		<tr>
-			<td>Order from customer: <%= @role.received_orders.last.amount %></td>
+			<td>从<%= @role.downstream.name %>发来的订单数量为: <%= @role.received_orders.last.amount %></td>
 		</tr>
 		<tr>
-			<td>Shipment received: <%= @role.received_shipments.last.amount %></td>
+			<td>你从<%= @role.upstream.name %>收到的货物数量为: <%= @role.received_shipments.last.amount %></td>
 		</tr>
 		<tr>
 			<% if @role.has_inventory?%>
-			<td>Current inventory: <%= @role.inventory %></td>
+			<td>你当前的库存是: <%= @role.inventory %></td>
 			<% else %>
-			<td>Current Backorder: <%= @role.backorder %></td>
+			<td>你当前的欠货是: <%= @role.backorder %></td>
 			<% end%>
 		</tr>	
 	</table>
@@ -25,25 +25,25 @@
 <% if !@role.order_placed? %>
 	<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create') )do |f| %>
 		<% f.fields_for :placed_orders do |order| %>
-			Enter the number of units to be purchased from <%= @role.upstream.name %>: <%= order.text_field :amount %>
+			请输入你要向<%= @role.upstream.name %>订货的数量: <%= order.text_field :amount %>
 		<% end %>
 		<%= f.hidden_field :id, :value => @role.id %>
 		<%= f.hidden_field :game_id, :value => @game.id %>
 		<%= f.submit 'Place order' %>
 	<% end %>
 <% else %>
-<p>PLEASE WAIT FOR ALL THE OTHER PARTNERS TO COMPLETE THEIR WEEKLY ORDERING AND SHIPPING.</p>
+<p>请等待其他玩家下订单。</p>
 <% end %>
 
 <div class="history">
 	<table>
 		<tr>
-			<td>Week</td>
-			<td>Inventory</td>
-			<td>Placed order</td>
-			<td>Placed shipment</td>
-			<td>Received order</td>
-			<td>Received shipment</td>
+			<td>星期</td>
+			<td>库存</td>
+			<td>已下订单</td>
+			<td>已发货</td>
+			<td>收到订单</td>
+			<td>收货</td>
 		</tr>
 			<% (0..@role.received_orders.length-1).to_a.each{|i|%>
 				<tr>
