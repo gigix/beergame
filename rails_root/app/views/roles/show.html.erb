@@ -39,6 +39,7 @@
 	<table>
 		<tr>
 			<td>Week</td>
+			<td>Inventory</td>
 			<td>Placed order</td>
 			<td>Placed shipment</td>
 			<td>Received order</td>
@@ -47,6 +48,7 @@
 			<% (0..@role.received_orders.length-1).to_a.each{|i|%>
 				<tr>
 					<td><%= i+1 %></td>
+					<td><%= @role.inventory_histories[i].amount%><td>
 					<td><%= @role.placed_orders[i].nil?? 0 : @role.placed_orders[i].amount %></td>
 					<td><%= @role.placed_shipments[i].amount %></td>
 					<td><%= @role.received_orders[i].amount %></td>

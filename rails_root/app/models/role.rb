@@ -9,6 +9,8 @@ class Role < ActiveRecord::Base
   has_one :downstream, :class_name => 'Role', :foreign_key => 'upstream_id'
   belongs_to :upstream, :class_name => 'Role', :foreign_key => 'upstream_id'
   
+  has_many :inventory_histories, :class_name => 'InventoryHistory', :foreign_key => 'role_id'
+  
   def place_order(amount)
     return if order_placed?
     update_attributes(:order_placed => true)
@@ -19,6 +21,7 @@ class Role < ActiveRecord::Base
   def update_status
     update_attributes(:order_placed => false)
     handle_received_orders
+    inventory_histories.create!(:amount => inventory, :at_week => current_week)
   end
   
   def information_delay_arrived?

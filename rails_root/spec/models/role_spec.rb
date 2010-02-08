@@ -123,6 +123,16 @@ describe Role do
       order = @wholesaler.placed_shipments.last
       order.amount.should == 7
       @wholesaler.inventory.should == -27
+      @wholesaler.inventory_histories.size.should == 2
+      @wholesaler.inventory_histories.last.amount.should == -27
+    end
+    
+    it 'should make a new record of inventory history' do
+      @wholesaler.update_status
+      inventory_history = @wholesaler.inventory_histories.last
+      inventory_history.role.should == @wholesaler
+      inventory_history.amount.should == 12
+      inventory_history.at_week.should == 1
     end
   end  
 end
