@@ -18,7 +18,6 @@ class Role < ActiveRecord::Base
   
   def update_status
     update_attributes(:order_placed => false)
-    handle_received_shipments
     handle_received_orders
   end
   
@@ -42,6 +41,14 @@ class Role < ActiveRecord::Base
     }
   end
   
+  def backorder
+    has_inventory?? 0 : inventory.abs
+  end
+  
+  def has_inventory?
+    inventory >= 0
+  end
+  
   private
 
   def handle_received_orders
@@ -50,10 +57,9 @@ class Role < ActiveRecord::Base
     ship(order.amount)
   end
   
-  def handle_received_shipments
+  def currently_received_shipment
     return if received_shipments.empty?
-    shipment = received_shipments.last
-    update_attributes(:inventory => inventory + shipment.amount)
+    shipment = received_shipments.last.amount
   end
 
   def deliver_order order
@@ -66,10 +72,10 @@ class Role < ActiveRecord::Base
   
   def ship(order_amount)
     requested_amount = order_amount + backorder
-    shipment_amount = inventory < requested_amount ? inventory : requested_amount
-    new_backorder = inventory < requested_amount ? requested_amount - inventory : 0
+    new_inventory = has_inventory?? inventory + currently_received_shipment : currently_received_shipment
+    shipment_amount = new_inventory < requested_amount ? new_inventory : requested_amount
     order = placed_shipments.create!(:amount => shipment_amount, :at_week => current_week)
-    update_attributes(:inventory => inventory - shipment_amount, :backorder => new_backorder)
+    update_attributes(:inventory => new_inventory - requested_amount)
   end
 
   def current_week

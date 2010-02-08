@@ -9,11 +9,16 @@
 	<table>
 		<tr>
 			<td>Order from customer: <%= @role.received_orders.last.amount %></td>
-			<td>Current inventory: <%= @role.inventory %></td>
 		</tr>
 		<tr>
 			<td>Shipment received: <%= @role.received_shipments.last.amount %></td>
+		</tr>
+		<tr>
+			<% if @role.has_inventory?%>
+			<td>Current inventory: <%= @role.inventory %></td>
+			<% else %>
 			<td>Current Backorder: <%= @role.backorder %></td>
+			<% end%>
 		</tr>	
 	</table>
 </div>

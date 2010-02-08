@@ -45,6 +45,18 @@ describe Role do
     end
   end
   
+  describe :back_order do
+    it 'back_order should be 0 if has inventory' do
+      @wholesaler.update_attributes(:inventory => 2)
+      @wholesaler.backorder.should == 0
+    end
+    
+    it 'back_order should be inventory.abs if inventory < 0' do
+      @wholesaler.update_attributes(:inventory => -9)
+      @wholesaler.backorder.should == 9 
+    end
+  end
+  
   describe :deliver_placed_orders do
     it 'should deliver order after information delay arrived' do
       @retailer.place_order(20)
@@ -99,18 +111,18 @@ describe Role do
       @wholesaler.update_status
       placed_shipment = @wholesaler.placed_shipments.last
       placed_shipment.amount.should == inventory + 5
-      @wholesaler.inventory.should == 0
+      @wholesaler.inventory.should == -95
       @wholesaler.backorder.should == 95
     end
 
     it 'should make shipment according to the sum of order and backorder' do
-      @wholesaler.update_attributes(:backorder => 10, :inventory => 28)
+      @wholesaler.update_attributes(:inventory => -28)
       @wholesaler.received_orders.create!(:amount => 6)
       @wholesaler.received_shipments.create!(:amount => 7)
       @wholesaler.update_status
       order = @wholesaler.placed_shipments.last
-      order.amount.should == 16
-      @wholesaler.inventory.should == 19
+      order.amount.should == 7
+      @wholesaler.inventory.should == -27
     end
   end  
 end

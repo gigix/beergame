@@ -155,7 +155,7 @@ describe Game do
       }
       @retailer.reload
       @retailer.received_shipments.last.amount.should == 5
-      @retailer.inventory.should == 0
+      @retailer.inventory.should == -3
       @retailer.backorder.should == 3
     end
   end
