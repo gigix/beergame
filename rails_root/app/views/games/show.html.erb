@@ -1,6 +1,6 @@
-<h1><%= @game.name %></h1>
+<h1>游戏名称：<%= @game.name %></h1>
 
-<h2>Current Week: <%= @game.current_week%></h2>
+<div>当前是第<%= @game.current_week %>个星期，请单击角色名称以加入游戏</div>
 <ul>
 	<% @game.roles.each do |role| %>
 	<li><%= link_to_play_a_role role %></li>

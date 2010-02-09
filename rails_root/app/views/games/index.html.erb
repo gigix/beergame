@@ -2,11 +2,15 @@
 
 <% form_for :game, :url => { :action => "create" } do |f| %>
 	<%= f.text_field :name %>
-	<%= submit_tag 'Create' %>
+	<%= submit_tag '创建游戏' %>
 <% end %>
 
 <ul>
 	<% @games.each do |game| %>
-	<li><%= link_to game.name, game_path(game) %></li>
+	<li><%= link_to game.name, game_path(game) %>
+		<span>
+			该游戏已经进行到第<%= game.current_week%>周。
+		</span>
+	</li>
 	<% end %>
 </ul>

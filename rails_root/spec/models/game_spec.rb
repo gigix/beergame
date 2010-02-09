@@ -69,7 +69,7 @@ describe Game do
 
   end
   
-  describe 'self.order_placed' do
+  describe :order_placeds do
     
     it 'do not pass current week if order placing not finished' do
       [@retailer, @wholesaler, @distributor].each{|role|
