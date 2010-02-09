@@ -3,25 +3,25 @@
 <div class="basic_information">
 	<h2>你所扮演的角色是：<%= @role.name %>，现在是第<%=@game.current_week%>个星期</h2>
 
-	<div class="placed_shipment">
-		你已经向<%= @role.downstream.name %>发送了<%= @role.placed_shipments.last.amount %>个单位的货物 
-	</div>
 	<div class="received_order">
 		从<%= @role.downstream.name %>发来的订单数量为: <%= @role.received_orders.last.amount %>
 	</div>
 	<div class="received_shipment">
 		你从<%= @role.upstream.name %>收到的货物数量为: <%= @role.received_shipments.last.amount %>
 	</div>
-			<% if @role.has_inventory?%>
-			<div class="inventory">
-				你当前的库存是: <%= @role.inventory %>
-			</div>
-			<% else %>
-			<div class="backorder">
-				你当前的欠货是: <%= @role.backorder %>
-			</div>
-			<% end%>
-		<div>
+	<div class="placed_shipment">
+		你已经向<%= @role.downstream.name %>发送了<%= @role.placed_shipments.last.amount %>个单位的货物 
+	</div>
+	<% if @role.has_inventory?%>
+		<div class="inventory">
+			你当前的库存是: <%= @role.inventory %>
+		</div>
+	<% else %>
+		<div class="backorder">
+			你当前的欠货是: <%= @role.backorder %>
+		</div>
+	<% end%>
+	<div>
 		<% if !@role.order_placed? %>
 				<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create') )do |f| %>
 					<% f.fields_for :placed_orders do |order| %>
@@ -34,7 +34,7 @@
 			<% else %>
 			<p>请等待其他玩家下订单。</p>
 		<% end %>
-		</div>
+	</div>
 
 </div>
 <div class="history">
@@ -43,9 +43,9 @@
 			<th>星期</th>
 			<th>库存/欠货</th>
 			<th>已下订单</th>
-			<th>已发货</th>
+			<th>已收货</th>
 			<th>收到订单</th>
-			<th>收货</th>
+			<th>已发货</th>
 		</tr>
 			<% (0..@role.received_orders.length-1).to_a.each{|i|%>
 				<tr>
@@ -54,9 +54,9 @@
 						<%= @role.inventory_histories[i].amount%>
 					</td>
 					<td><%= @role.placed_orders[i].nil?? 0 : @role.placed_orders[i].amount %></td>
-					<td><%= @role.placed_shipments[i].amount %></td>
-					<td><%= @role.received_orders[i].amount %></td>
 					<td><%= @role.received_shipments[i].amount %></td>
+					<td><%= @role.received_orders[i].amount %></td>
+					<td><%= @role.placed_shipments[i].amount %></td>
 				</tr>	
 			<% } %>
 	</table>
