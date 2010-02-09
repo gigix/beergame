@@ -35,6 +35,9 @@
 			<p>请等待其他玩家下订单。</p>
 		<% end %>
 	</div>
+	<div>
+		<%= link_to "查看统计图表", game_plot_path(@role.game, @role), :rel => "gb_page_center[550, 350]" %>
+	</div>
 
 </div>
 <div class="history">
@@ -47,17 +50,17 @@
 			<th>收到订单</th>
 			<th>已发货</th>
 		</tr>
-			<% (0..@role.received_orders.length-1).to_a.each{|i|%>
+			<% (0..@role.received_orders.length-1).to_a.each do |i| %>
 				<tr>
 					<td><%= i+1 %></td>
 					<td class= <%= @role.inventory_histories[i].amount > 0 ? "inventory" : "backorder" %>>
-						<%= @role.inventory_histories[i].amount%>
+						<%= @role.inventory_histories[i].amount %>
 					</td>
 					<td><%= @role.placed_orders[i].nil?? 0 : @role.placed_orders[i].amount %></td>
 					<td><%= @role.received_shipments[i].amount %></td>
 					<td><%= @role.received_orders[i].amount %></td>
 					<td><%= @role.placed_shipments[i].amount %></td>
 				</tr>	
-			<% } %>
+			<% end %>
 	</table>
 </div>
