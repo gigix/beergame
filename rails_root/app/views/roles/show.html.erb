@@ -1,7 +1,7 @@
 <% title @game.name %>
 
 <div class="basic_information">
-	<h2>你所扮演的角色是：<%= @role.name %>，现在是第<%=@game.current_week%>个星期</h2>
+	<h2>你所扮演的角色是：<%= @role.name %>，现在是第<%=@game.current_week%>周</h2>
 
 	<div class="received_order">
 		从<%= @role.downstream.name %>发来的订单数量为: <%= @role.received_orders.last.amount %>
@@ -21,7 +21,7 @@
 			你当前的欠货是: <%= @role.backorder %>
 		</div>
 	<% end%>
-	<div>
+	<div class="order_form">
 		<% if !@role.order_placed? %>
 				<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create') )do |f| %>
 					<% f.fields_for :placed_orders do |order| %>
@@ -32,7 +32,7 @@
 					<%= f.submit '下订单' %>
 				<% end %>
 			<% else %>
-			<p>请等待其他玩家下订单。</p>
+			<p><span>请等待其他玩家下订单。</span></p>
 		<% end %>
 	</div>
 	<div>
@@ -42,6 +42,7 @@
 </div>
 <div class="history">
 	<table>
+		<thead>
 		<tr>
 			<th>星期</th>
 			<th>库存/欠货</th>
@@ -50,6 +51,8 @@
 			<th>收到订单</th>
 			<th>已发货</th>
 		</tr>
+		</thead>
+		<tbody>
 			<% (0..@role.received_orders.length-1).to_a.each do |i| %>
 				<tr>
 					<td><%= i+1 %></td>
@@ -62,5 +65,6 @@
 					<td><%= @role.placed_shipments[i].amount %></td>
 				</tr>	
 			<% end %>
+		</tbody>
 	</table>
 </div>

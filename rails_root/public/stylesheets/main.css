@@ -42,6 +42,79 @@ a {
 	margin-bottom:15px;
 }
 
+.basic_information{
+	margin: 15px 0;
+	float: left;
+}
+
+.basic_information h2{
+	font-size: 1.3em;
+	padding-bottom: 15px;
+}
+
+.order_form span{
+	font-weight:bold;
+}
+
+.history{
+	height: 380px;
+	width: 380px;
+	float: right;
+}
+
+.history table{
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	border-top:1px solid transparent;
+	border-bottom:1px solid #FFFFFF;
+	border-collapse:collapse;
+	font-family:"Lucida Sans Unicode","Lucida Grande",Sans-Serif;
+	font-size:12px;
+	margin:20px 0;
+	text-align:left;
+	width: 380px;
+	max-height: 320px;
+}
+
+.history table th{
+	background:#B9C9FE none repeat scroll 0 0;
+	color:#003399;
+	font-size:13px;
+	font-weight:normal;
+	padding: 5px;
+}
+
+.history table thead{
+	width: 100%;
+}
+.history table tbody{
+	margin: 0 0;
+	padding: 0 20 0 0;
+	height: 330px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.history table td{
+	background:#E8EDFF none repeat scroll 0 0;
+	color:#666699;
+	padding:5px ;
+}
+
+.history tr:hover td{
+	background:#D0DAFD none repeat scroll 0 0;
+	color:#333399;
+}
+
+.history table td.backorder{
+	color: red;
+}
+
+.backorder{
+	color: red;
+}
+
 #header.pageheaded {
 	border-bottom:2px solid #DDDDDD;
 	height:65px;
@@ -126,63 +199,4 @@ ul.usernav li {
 #header .logo {
 	float:left;
 	padding-top:20px;
-}
-
-.basic_information{
-	margin: 15px 0;
-	float: left;
-}
-.basic_information h2{
-	padding-bottom: 15px;
-}
-
-.history{
-	float: right;
-}
-.history table{
-	border-collapse:collapse;
-	font-family:"Lucida Sans Unicode","Lucida Grande",Sans-Serif;
-	font-size:12px;
-	margin:20px;
-	text-align:left;
-	width:380px;
-}
-.history table th{
-	-moz-background-clip:border;
-	-moz-background-inline-policy:continuous;
-	-moz-background-origin:padding;
-	background:#B9C9FE none repeat scroll 0 0;
-	border-bottom:1px solid #FFFFFF;
-	border-top:4px solid #AABCFE;
-	color:#003399;
-	font-size:13px;
-	font-weight:normal;
-	padding:8px;
-}
-
-.history table td{
-	-moz-background-clip:border;
-	-moz-background-inline-policy:continuous;
-	-moz-background-origin:padding;
-	background:#E8EDFF none repeat scroll 0 0;
-	border-bottom:1px solid #FFFFFF;
-	border-top:1px solid transparent;
-	color:#666699;
-	padding:8px;
-}
-
-.history tr:hover td{
-	-moz-background-clip:border;
-	-moz-background-inline-policy:continuous;
-	-moz-background-origin:padding;
-	background:#D0DAFD none repeat scroll 0 0;
-	color:#333399;
-}
-
-.history table td.backorder{
-	color: red;
-}
-
-.backorder{
-	color: red;
 }
