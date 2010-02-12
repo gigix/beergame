@@ -2,6 +2,12 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'games'
   
   map.resources :games, :has_many => [{:roles => :orders}, :plots]
+  
+  # map.with_options :controller => 'roles' do |t|
+    # t.graph ':id/graph', :action => 'graph'
+  # end
+  
+  map.graph 'roles/:id/graph', :controller => 'roles', :action => 'graph'
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
