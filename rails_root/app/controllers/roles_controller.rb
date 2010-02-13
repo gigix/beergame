@@ -2,7 +2,6 @@ class RolesController < ApplicationController
   def show
     @game = Game.find(params[:game_id])
     @role = @game.roles.find(params[:id])
-    @graph = open_flash_chart_object(500,300,graph_path(@role.id))
   end
   
   def place_order

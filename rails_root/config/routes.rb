@@ -7,7 +7,7 @@ ActionController::Routing::Routes.draw do |map|
     # t.graph ':id/graph', :action => 'graph'
   # end
   
-  map.graph 'roles/:id/graph', :controller => 'roles', :action => 'graph'
+  map.role_plot 'roles/:id/plot', :controller => 'plots', :action => 'role_plot'
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
