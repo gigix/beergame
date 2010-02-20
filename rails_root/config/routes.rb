@@ -8,7 +8,9 @@ ActionController::Routing::Routes.draw do |map|
   # end
   
   map.role_plot 'roles/:id/plot', :controller => 'plots', :action => 'role_plot'
-  map.team_placed_order_plot 'game/:id/plot/team_placed_order_plot', :controller => 'plots', :action => 'team_placed_order_plot'
+  map.team_placed_orders_plot 'game/:id/plot/team_placed_orders_plot', :controller => 'plots', :action => 'team_placed_orders_plot'
+  map.team_received_orders_plot 'game/:id/plot/team_received_orders_plot', :controller => 'plots', :action => 'team_received_orders_plot'
+  map.team_inventory_histories_plot 'game/:id/plot/team_inventory_histories_plot', :controller => 'plots', :action => 'team_inventory_histories_plot'
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:

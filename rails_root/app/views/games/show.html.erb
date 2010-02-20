@@ -8,5 +8,11 @@
 	<% end %>
 </ul>
 <div>
-	<%= link_to "查看统计图表", {:controller => "plots", :action => "show_team_plots", :id => @game}, :rel => "gb_page_center[550, 350]" %>
+	<%= link_to "查看订货量统计图表", {:controller => "plots", :action => "show_team_placed_orders", :id => @game}, :rel => "gb_page_center[550, 350]" %>
+</div>
+<div>
+	<%= link_to "查看需求量统计图表", {:controller => "plots", :action => "show_team_received_orders", :id => @game}, :rel => "gb_page_center[550, 350]" %>
+</div>
+<div>
+	<%= link_to "查看库存量统计图表", {:controller => "plots", :action => "show_team_inventory_histories", :id => @game}, :rel => "gb_page_center[550, 350]" %>
 </div>
