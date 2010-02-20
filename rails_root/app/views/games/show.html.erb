@@ -1,3 +1,4 @@
+<% title @game.name %>
 <h1>游戏名称：<%= @game.name %></h1>
 
 <div>当前是第<%= @game.current_week %>个星期，请单击角色名称以加入游戏</div>
@@ -6,3 +7,6 @@
 	<li><%= link_to_play_a_role role %></li>
 	<% end %>
 </ul>
+<div>
+	<%= link_to "查看统计图表", {:controller => "plots", :action => "show_team_plots", :id => @game}, :rel => "gb_page_center[550, 350]" %>
+</div>

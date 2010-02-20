@@ -8,6 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   # end
   
   map.role_plot 'roles/:id/plot', :controller => 'plots', :action => 'role_plot'
+  map.team_placed_order_plot 'game/:id/plot/team_placed_order_plot', :controller => 'plots', :action => 'team_placed_order_plot'
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:

@@ -4,7 +4,7 @@ class GamesController < ApplicationController
   end
   
   def create
-    Game.create_with_roles(params[:game][:name], ['retailer', 'wholesaler', 'distributor', 'factory'])
+    Game.create_with_roles(params[:game][:name], ['零售商', '分销商', '批发商', '制造商'])
     redirect_to games_path
   end
   

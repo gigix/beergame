@@ -6,8 +6,8 @@ class Game < ActiveRecord::Base
   def self.create_with_roles(name, role_names)
     game = create!(:name => name, :current_week => 1)
     
-    last_role = game.roles.create!(:name => 'consumer')
-    role_names.push('brewery').each do |role_name| 
+    last_role = game.roles.create!(:name => '顾客')
+    role_names.push('工厂').each do |role_name| 
       upper_role = game.roles.create!(:name => role_name, :playable => true, :information_delay => 2, :shipping_delay => 2, :inventory => 12)
       last_role.update_attributes(:upstream => upper_role)
       last_role = upper_role

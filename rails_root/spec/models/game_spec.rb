@@ -21,7 +21,7 @@ describe Game do
       wholesaler.should be_playable
       brewery.should_not be_playable
       
-      consumer.name.should == 'consumer'
+      consumer.name.should == '顾客'
       consumer.downstream.should be_nil
       consumer.upstream.should == retailer
       retailer.downstream.should == consumer
