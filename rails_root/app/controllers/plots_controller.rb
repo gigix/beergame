@@ -16,8 +16,7 @@ class PlotsController < ApplicationController
       
       def team_#{method_type}_plot
         @game = Game.find(params[:id])
-        chart = open_flash_chart Title.new("#{title}")
-
+        x_label_values = []
         retailer_#{method_type} = []
         wholesaler_#{method_type} = []
         distributor_#{method_type} = []
@@ -27,13 +26,15 @@ class PlotsController < ApplicationController
           wholesaler_#{method_type} << @game.roles[2].#{method_type}[i].amount
           distributor_#{method_type} << @game.roles[3].#{method_type}[i].amount
           factory_#{method_type} << @game.roles[4].#{method_type}[i].amount
+          x_label_values << (i+1).to_s
         end  
 
         min_y_range = [retailer_#{method_type}.min, wholesaler_#{method_type}.min, distributor_#{method_type}.min, factory_#{method_type}.min].min
         max_y_range = [retailer_#{method_type}.max, wholesaler_#{method_type}.max, distributor_#{method_type}.max, factory_#{method_type}.max].max
         y = YAxis.new
         y.set_range(min_y_range,max_y_range,100)
-        chart.y_axis = y
+        
+        chart = open_flash_chart(Title.new("#{title}"), create_x_axis(x_label_values), y)
 
         chart.add_element(create_retailer_line retailer_#{method_type})
         chart.add_element(create_wholesaler_line wholesaler_#{method_type})
@@ -46,24 +47,25 @@ class PlotsController < ApplicationController
   
   def role_plot
      @role = Role.find(params[:id])
-     chart = open_flash_chart Title.new("统计图：游戏#{@role.game.name}，角色#{@role.name}")
-     
+
+     x_label_values = []
      received_orders = []
      placed_orders = []
      inventory_histories = []
-     week = @role.received_orders.length
-     (0..week-1).to_a.each do |i|
+     (0..@role.game.current_week-2).to_a.each do |i|
        received_orders << @role.received_orders[i].amount
        placed_amount = @role.placed_orders[i].nil?? 0 : @role.placed_orders[i].amount
        placed_orders << placed_amount
        inventory_histories << @role.inventory_histories[i].amount 
+       x_label_values << (i+1).to_s
      end
-
+     
      min_y_range = inventory_histories.min
      max_y_range = [placed_orders.max, received_orders.max, inventory_histories.max].max
      y = YAxis.new
      y.set_range(min_y_range,max_y_range,100)
-     chart.y_axis = y
+     
+     chart = open_flash_chart(Title.new("统计图：游戏#{@role.game.name}，角色#{@role.name}"), create_x_axis(x_label_values), y)
 
      chart.add_element(create_placed_order_line placed_orders)
      chart.add_element(create_received_order_line received_orders)
@@ -71,9 +73,17 @@ class PlotsController < ApplicationController
 
      render :text => chart.to_s
    end
-   
+
    private
-   def open_flash_chart title
+   def create_x_axis x_label_values
+     x_labels = XAxisLabels.new
+     x_labels.labels = x_label_values
+     x = XAxis.new
+     x.set_labels(x_labels)
+     x
+   end
+   
+   def open_flash_chart title, x_axis, y_axis
      x_legend = XLegend.new("星期")
      x_legend.set_style('{font-size: 14px; color: #778877}')
 
@@ -83,6 +93,8 @@ class PlotsController < ApplicationController
      chart.set_title(title)
      chart.set_x_legend(x_legend)
      chart.set_y_legend(y_legend)
+     chart.x_axis = x_axis
+     chart.y_axis = y_axis
      chart
    end
    
