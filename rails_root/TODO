@@ -13,9 +13,9 @@ AS AN instructor, I WANT TO check the team's demand/order/inventory plots, SO TH
 ===== DOING =====
 UI tidy up
 
+AS AN instructor, I WANT TO configure a game with holding/backorder costs, SO THAT I can make the game more realistic
 ===== STORIES =====
 
-AS AN instructor, I WANT TO configure a game with holding/backorder costs, SO THAT I can make the game more realistic
 AS A player, I WANT TO see my costs on a weekly base, SO THAT I can understand my situation well
 AS AN instructor, I WANT TO configure a game with a number of weeks, SO THAT it finishes after that number of rounds
 AS AN instructor, I WANT TO check the team's costs in total, SO THAT I can debrief the game well

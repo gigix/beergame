@@ -35,6 +35,12 @@ describe Game do
       }
     end
     
+    it 'each role should have none empty inventory history list after game created' do
+      @game.roles[1..@game.roles.length-2].each{ |role|
+        role.inventory_histories.first.amount.should == 12
+      }
+    end
+    
     it 'brewer should have a large inventory which is max int value' do
       @game.roles.last.inventory.should == Game::MAX_INVENTORY
     end
