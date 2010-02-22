@@ -3,7 +3,7 @@ class Game < ActiveRecord::Base
   has_many :roles
   
   def self.create_with_roles(name, role_names)
-    game = create!(:name => name, :current_week => 1)
+    game = create!(:name => name, :current_week => 1, :inventory_cost => 1.5, :backorder_cost => 2)
     Game.create_roles game, role_names
     Game.prepare_for_the_first_week game
   end

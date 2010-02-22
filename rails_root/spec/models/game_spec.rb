@@ -73,9 +73,13 @@ describe Game do
       @retailer.received_orders.first.sender.should == nil
     end
 
+    it 'should have initial inventory/backorder cost' do
+      @game.inventory_cost.should == 1.5
+      @game.backorder_cost.should == 2
+    end
   end
   
-  describe :order_placeds do
+  describe :order_placed do
     
     it 'do not pass current week if order placing not finished' do
       [@retailer, @wholesaler, @distributor].each{|role|

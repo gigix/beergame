@@ -23,6 +23,7 @@ AS AN instructor, I WANT TO configure a role in a game with a password, SO THAT 
 
 ===== DEFECTS =====
 vertical scroll bar
+input validation
 ===== Tech tasks ===
 Refactor the tests
 Re-organize the test data with fixtures, so that we never need to call role.reload in the tests any more

@@ -1,0 +1,12 @@
+<% title @game.name %>
+<h1>游戏名称：<%= @game.name %></h1>
+
+<% form_for(@game) do |game| %>
+	<p> 
+		库存成本：<%= game.text_field :inventory_cost %> 
+	</p> 
+	<p> 
+		欠货成本：<%= game.text_field :backorder_cost %> 
+	</p>
+	<p><%= game.submit "提交" %></p>
+<% end%>

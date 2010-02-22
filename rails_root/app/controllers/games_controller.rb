@@ -11,4 +11,14 @@ class GamesController < ApplicationController
   def show
     @game = Game.find(params[:id])
   end
+  
+  def edit
+    @game = Game.find(params[:id])
+  end
+  
+  def update
+    game = Game.find(params[:id])
+    game.update_attributes(params[:game])
+    redirect_to games_path
+  end
 end

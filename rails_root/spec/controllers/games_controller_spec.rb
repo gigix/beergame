@@ -31,4 +31,22 @@ describe GamesController do
       response.should be_success
     end
   end
+  
+  describe 'GET edit' do
+    it 'show game information' do
+      get :edit, :id => @game
+      assigns(:game).should == @game
+      response.should be_success
+    end
+  end
+  
+  describe 'PUT update' do
+    it 'update game information' do
+      put :update, :id => @game, :game => {:inventory_cost => 3, :backorder_cost => 5}
+      response.should redirect_to(games_path)
+      game = Game.find(@game)
+      game.inventory_cost.should == 3
+      game.backorder_cost.should == 5
+    end
+  end
 end
