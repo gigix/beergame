@@ -73,9 +73,15 @@ describe Game do
       @retailer.received_orders.first.sender.should == nil
     end
 
-    it 'should have initial inventory/backorder cost' do
-      @game.inventory_cost.should == 1.5
-      @game.backorder_cost.should == 2
+    it 'game should have initial inventory/backorder cost' do
+      @game.inventory_cost.should == 0.5
+      @game.backorder_cost.should == 1
+    end
+    
+    it 'each role should have none empty cost history list after game create' do
+      @game.roles[1..@game.roles.length-2].each{ |role|
+        role.cost_histories.first.amount.should == role.inventory * @game.inventory_cost
+      }
     end
   end
   

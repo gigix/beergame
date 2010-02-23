@@ -134,5 +134,31 @@ describe Role do
       inventory_history.amount.should == 12
       inventory_history.at_week.should == 1
     end
+    
+    it 'should add a new cost record according to inventory if has inventory' do
+      @wholesaler.cost_histories.clear
+      @wholesaler.update_attributes(:inventory => 9)
+      @wholesaler.update_status
+      cost = @wholesaler.cost_histories.last
+      cost.amount.should == 4.5
+      cost.at_week.should == 1
+    end
+    
+    it 'should add a new cost record according to backorder if has no inventory' do
+      @wholesaler.cost_histories.clear
+      @wholesaler.update_attributes(:inventory => -28)
+      @wholesaler.update_status
+      cost = @wholesaler.cost_histories.last
+      cost.amount.should == 28
+    end
+    
+    it 'cost should be incremental' do
+      @wholesaler.cost_histories.clear
+      @wholesaler.cost_histories.create!(:amount => 18, :at_week => 1)
+      @wholesaler.update_attributes(:inventory => -28)
+      @wholesaler.update_status
+      cost = @wholesaler.cost_histories.last
+      cost.amount.should == 46
+    end
   end  
 end

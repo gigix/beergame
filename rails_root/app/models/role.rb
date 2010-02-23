@@ -10,6 +10,7 @@ class Role < ActiveRecord::Base
   belongs_to :upstream, :class_name => 'Role', :foreign_key => 'upstream_id'
   
   has_many :inventory_histories, :class_name => 'InventoryHistory', :foreign_key => 'role_id'
+  has_many :cost_histories, :class_name => 'CostHistory', :foreign_key => 'role_id'
   
   def place_order(amount)
     return if order_placed?
@@ -22,6 +23,7 @@ class Role < ActiveRecord::Base
     update_attributes(:order_placed => false)
     handle_received_orders
     inventory_histories.create!(:amount => inventory, :at_week => current_week)
+    cost_histories.create!(:amount => cal_new_cost + current_cost, :at_week => current_week)
   end
   
   def information_delay_arrived?
@@ -34,7 +36,7 @@ class Role < ActiveRecord::Base
   
   def deliver_placed_shipments
     placed_shipments.each{ |shipment|
-      deliver_shipement shipment if shipment.at_week == current_week - shipping_delay
+      deliver_shipment shipment if shipment.at_week == current_week - shipping_delay
     }
   end
   
@@ -53,6 +55,14 @@ class Role < ActiveRecord::Base
   end
   
   private
+  def current_cost
+    return 0 if cost_histories.empty?
+    cost_histories.last.amount
+  end
+  
+  def cal_new_cost
+    has_inventory?? inventory * game.inventory_cost : inventory.abs * game.backorder_cost
+  end
 
   def handle_received_orders
     return if received_orders.empty?
@@ -69,16 +79,16 @@ class Role < ActiveRecord::Base
     upstream.received_orders.create!(:amount => order.amount, :at_week => current_week)
   end
   
-  def deliver_shipement shipment
+  def deliver_shipment shipment
     downstream.received_shipments.create!(:amount => shipment.amount, :at_week => current_week)
   end
   
   def ship(order_amount)
     requested_amount = order_amount + backorder
-    new_inventory = has_inventory?? inventory + currently_received_shipment : currently_received_shipment
-    shipment_amount = new_inventory < requested_amount ? new_inventory : requested_amount
+    tmp_inventory = has_inventory?? inventory + currently_received_shipment : currently_received_shipment
+    shipment_amount = tmp_inventory < requested_amount ? tmp_inventory : requested_amount
     order = placed_shipments.create!(:amount => shipment_amount, :at_week => current_week)
-    update_attributes(:inventory => new_inventory - requested_amount)
+    update_attributes(:inventory => tmp_inventory - requested_amount)
   end
 
   def current_week
