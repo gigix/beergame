@@ -48,6 +48,7 @@
 			<th>已收货</th>
 			<th>收到订单</th>
 			<th>已发货</th>
+			<th>总成本</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -61,6 +62,7 @@
 					<td><%= @role.received_shipments[i].amount %></td>
 					<td><%= @role.received_orders[i].amount %></td>
 					<td><%= @role.placed_shipments[i].amount %></td>
+					<td><%= @role.cost_histories[i].amount %></td>
 				</tr>	
 			<% end %>
 		</tbody>

@@ -6,7 +6,8 @@ class PlotsController < ApplicationController
   
   { "placed_orders" => "订货量", 
     "received_orders" => "需求量",
-    "inventory_histories" => "库存量"
+    "inventory_histories" => "库存量",
+    "cost_histories" => "成本"
   }.each do |method_type, title|
     class_eval <<-team_plots
       def show_team_#{method_type}
@@ -32,7 +33,7 @@ class PlotsController < ApplicationController
         min_y_range = [retailer_#{method_type}.min, wholesaler_#{method_type}.min, distributor_#{method_type}.min, factory_#{method_type}.min].min
         max_y_range = [retailer_#{method_type}.max, wholesaler_#{method_type}.max, distributor_#{method_type}.max, factory_#{method_type}.max].max
         y = YAxis.new
-        y.set_range(min_y_range,max_y_range,100)
+        y.set_range(min_y_range,max_y_range+100,100)
         
         chart = open_flash_chart(Title.new("#{title}"), create_x_axis(x_label_values), y)
 
@@ -52,24 +53,27 @@ class PlotsController < ApplicationController
      received_orders = []
      placed_orders = []
      inventory_histories = []
+     cost_histories = []
      (0..@role.game.current_week-2).to_a.each do |i|
        received_orders << @role.received_orders[i].amount
        placed_amount = @role.placed_orders[i].nil?? 0 : @role.placed_orders[i].amount
        placed_orders << placed_amount
        inventory_histories << @role.inventory_histories[i].amount 
+       cost_histories << @role.cost_histories[i].amount
        x_label_values << (i+1).to_s
      end
      
-     min_y_range = inventory_histories.min
+     min_y_range = [placed_orders.min, received_orders.min, inventory_histories.min].min
      max_y_range = [placed_orders.max, received_orders.max, inventory_histories.max].max
      y = YAxis.new
-     y.set_range(min_y_range,max_y_range,100)
+     y.set_range(min_y_range,max_y_range+100,100)
      
      chart = open_flash_chart(Title.new("统计图：游戏#{@role.game.name}，角色#{@role.name}"), create_x_axis(x_label_values), y)
 
      chart.add_element(create_placed_order_line placed_orders)
      chart.add_element(create_received_order_line received_orders)
      chart.add_element(create_inventory_history_line inventory_histories)
+     chart.add_element(create_cost_history_line cost_histories)
 
      render :text => chart.to_s
    end
@@ -96,6 +100,14 @@ class PlotsController < ApplicationController
      chart.x_axis = x_axis
      chart.y_axis = y_axis
      chart
+   end
+   
+   def create_cost_history_line values
+     cost_history_line = new_line
+     cost_history_line.text = "成本"
+     cost_history_line.colour = '#31D310'
+     cost_history_line.values = values
+     cost_history_line
    end
    
    def create_received_order_line values
