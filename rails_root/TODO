@@ -10,15 +10,15 @@ AS A player, I WANT TO pass time to next week after everyone placed orders, SO T
 
 AS A player, I WANT TO check my demand/order/inventory plots, SO THAT I can understand my situation well
 AS AN instructor, I WANT TO check the team's demand/order/inventory plots, SO THAT I can debrief the game well
+AS AN instructor, I WANT TO configure a game with holding/backorder costs, SO THAT I can make the game more realistic
+AS A player, I WANT TO see my costs on a weekly base, SO THAT I can understand my situation well
+AS AN instructor, I WANT TO check the team's costs in total, SO THAT I can debrief the game well
 ===== DOING =====
 UI tidy up
 
-AS AN instructor, I WANT TO configure a game with holding/backorder costs, SO THAT I can make the game more realistic
 ===== STORIES =====
 
-AS A player, I WANT TO see my costs on a weekly base, SO THAT I can understand my situation well
 AS AN instructor, I WANT TO configure a game with a number of weeks, SO THAT it finishes after that number of rounds
-AS AN instructor, I WANT TO check the team's costs in total, SO THAT I can debrief the game well
 AS AN instructor, I WANT TO configure a role in a game with a password, SO THAT I can control roles assigned to players
 
 ===== DEFECTS =====
