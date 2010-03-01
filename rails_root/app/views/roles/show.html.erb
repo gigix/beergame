@@ -1,4 +1,16 @@
 <% title @game.name %>
+
+<script>
+	window.onload = function() {
+		try {
+			$('role_placed_orders_amount').focus();
+		} catch(e) {}
+		
+		window.setTimeout(function() {
+	 		window.location.reload(); }, 5000);
+	};
+</script>
+
 <div class="basic_information">
 	<h2>你所扮演的角色是：<%= @role.name %>，现在是第<%=@game.current_week%>周</h2>
 
