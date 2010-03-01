@@ -37,10 +37,10 @@ class PlotsController < ApplicationController
         
         chart = open_flash_chart(Title.new("#{title}"), create_x_axis(x_label_values), y)
 
-        chart.add_element(create_retailer_line retailer_#{method_type})
-        chart.add_element(create_wholesaler_line wholesaler_#{method_type})
-        chart.add_element(create_distributor_line distributor_#{method_type})
-        chart.add_element(create_factory_line factory_#{method_type})
+        chart.add_element(create_retailer_line(retailer_#{method_type}))
+        chart.add_element(create_wholesaler_line(wholesaler_#{method_type}))
+        chart.add_element(create_distributor_line(distributor_#{method_type}))
+        chart.add_element(create_factory_line(factory_#{method_type}))
         render :text => chart.to_s
       end
     team_plots
@@ -63,22 +63,30 @@ class PlotsController < ApplicationController
        x_label_values << (i+1).to_s
      end
      
-     min_y_range = [placed_orders.min, received_orders.min, inventory_histories.min].min
-     max_y_range = [placed_orders.max, received_orders.max, inventory_histories.max].max
+     min_y_range = min([min(placed_orders), min(received_orders), min(inventory_histories)])
+     max_y_range = max([max(placed_orders), max(received_orders), max(inventory_histories)])
      y = YAxis.new
      y.set_range(min_y_range,max_y_range+100,100)
      
      chart = open_flash_chart(Title.new("统计图：游戏#{@role.game.name}，角色#{@role.name}"), create_x_axis(x_label_values), y)
 
-     chart.add_element(create_placed_order_line placed_orders)
-     chart.add_element(create_received_order_line received_orders)
-     chart.add_element(create_inventory_history_line inventory_histories)
-     chart.add_element(create_cost_history_line cost_histories)
+     chart.add_element(create_placed_order_line(placed_orders))
+     chart.add_element(create_received_order_line(received_orders))
+     chart.add_element(create_inventory_history_line(inventory_histories))
+     chart.add_element(create_cost_history_line(cost_histories))
 
      render :text => chart.to_s
    end
 
    private
+   def min(arr)
+     arr.min rescue 0
+   end
+   
+   def max(arr)
+     arr.max rescue 0
+   end
+   
    def create_x_axis x_label_values
      x_labels = XAxisLabels.new
      x_labels.labels = x_label_values

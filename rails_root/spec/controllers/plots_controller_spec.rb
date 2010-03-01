@@ -12,6 +12,13 @@ describe PlotsController do
     end
   end
   
+  describe 'GET role_plot' do
+    it 'renders with given role' do
+      get :role_plot, :id => @retailer
+      response.should be_success 
+    end
+  end
+  
   describe 'GET show_team_placed_orders' do
     it 'renders with given game' do
       get :show_team_placed_orders, :id => @game
