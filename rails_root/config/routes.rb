@@ -9,10 +9,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.with_options :controller => "plots" do |plot|
     plot.role_plot 'roles/:id/plot', :action => 'role_plot'
-    plot.team_placed_orders_plot 'game/:id/plot/team_placed_orders_plot', :action => 'team_placed_orders_plot'
-    plot.team_received_orders_plot 'game/:id/plot/team_received_orders_plot', :action => 'team_received_orders_plot'
-    plot.team_inventory_histories_plot 'game/:id/plot/team_inventory_histories_plot', :action => 'team_inventory_histories_plot'
-    plot.team_cost_histories_plot 'game/:id/plot/team_cost_histories_plot', :action => 'team_cost_histories_plot'
+    plot.team_plot 'game/:id/plot/team_plot/:method_type', :action => 'team_plot'
   end
   
   # The priority is based upon order of creation: first created -> highest priority.

@@ -8,14 +8,14 @@
 	<% end %>
 </ul>
 <div>
-	<%= link_to "查看订货量统计图表", {:controller => "plots", :action => "show_team_placed_orders", :id => @game}, :rel => "gb_page_center[550, 350]" %>
+	<%= link_to_team_plot "placed_orders" %>
 </div>
 <div>
-	<%= link_to "查看需求量统计图表", {:controller => "plots", :action => "show_team_received_orders", :id => @game}, :rel => "gb_page_center[550, 350]" %>
+	<%= link_to_team_plot "received_orders" %>
 </div>
 <div>
-	<%= link_to "查看库存量统计图表", {:controller => "plots", :action => "show_team_inventory_histories", :id => @game}, :rel => "gb_page_center[550, 350]" %>
+	<%= link_to_team_plot "inventory_histories" %>
 </div>
 <div>
-	<%= link_to "查看成本统计图表", {:controller => "plots", :action => "show_team_cost_histories", :id => @game}, :rel => "gb_page_center[550, 350]" %>
+	<%= link_to_team_plot "cost_histories" %>
 </div>

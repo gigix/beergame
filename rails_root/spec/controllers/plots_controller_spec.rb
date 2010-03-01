@@ -21,21 +21,21 @@ describe PlotsController do
   
   describe 'GET show_team_placed_orders' do
     it 'renders with given game' do
-      get :show_team_placed_orders, :id => @game
+      get :show_team_plot, :id => @game, :method_type => 'placed_orders'
       response.should be_success
     end
   end
   
   describe 'GET team_placed_orders_plot' do
     it 'renders with given game' do
-      get :team_placed_orders_plot, :id => @game
+      get :team_plot, :id => @game, :method_type => 'placed_orders'
       response.should be_success
     end
   end
   
   describe 'GET show_team_received_orders' do
     it 'renders with given game' do
-      get :show_team_received_orders, :id => @game
+      get :show_team_plot, :id => @game, :method_type => 'received_orders'
       response.should be_success
     end
   end
@@ -43,7 +43,7 @@ describe PlotsController do
   
   describe 'GET show_team_inventory_histories' do
     it 'renders with given game' do
-      get :show_team_inventory_histories, :id => @game
+      get :show_team_plot, :id => @game, :method_type => 'inventory_histories'
       response.should be_success
     end
   end

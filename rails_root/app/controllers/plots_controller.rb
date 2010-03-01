@@ -1,49 +1,47 @@
 class PlotsController < ApplicationController
+  include PlotsHelper
+  
   def show
     @graph = open_flash_chart_object(500,300,role_plot_path(params[:id]))
     render :layout => false
   end
   
-  { "placed_orders" => "订货量", 
-    "received_orders" => "需求量",
-    "inventory_histories" => "库存量",
-    "cost_histories" => "成本"
-  }.each do |method_type, title|
-    class_eval <<-team_plots
-      def show_team_#{method_type}
-        @#{method_type}_graph = open_flash_chart_object(500,300,team_#{method_type}_plot_path(params[:id]))
-        render :layout => false
-      end
-      
-      def team_#{method_type}_plot
-        @game = Game.find(params[:id])
-        x_label_values = []
-        retailer_#{method_type} = []
-        wholesaler_#{method_type} = []
-        distributor_#{method_type} = []
-        factory_#{method_type} = []
-        (0..@game.current_week-2).to_a.each do |i|
-          retailer_#{method_type} << @game.roles[1].#{method_type}[i].amount
-          wholesaler_#{method_type} << @game.roles[2].#{method_type}[i].amount
-          distributor_#{method_type} << @game.roles[3].#{method_type}[i].amount
-          factory_#{method_type} << @game.roles[4].#{method_type}[i].amount
-          x_label_values << (i+1).to_s
-        end  
-
-        min_y_range = min([min(retailer_#{method_type}), min(wholesaler_#{method_type}), min(distributor_#{method_type}), min(factory_#{method_type})])
-        max_y_range = max([max(retailer_#{method_type}), max(wholesaler_#{method_type}), max(distributor_#{method_type}), max(factory_#{method_type})])
-        y = YAxis.new
-        y.set_range(min_y_range,max_y_range+100,100)
-        
-        chart = open_flash_chart(Title.new("#{title}"), create_x_axis(x_label_values), y)
-
-        chart.add_element(create_retailer_line(retailer_#{method_type}))
-        chart.add_element(create_wholesaler_line(wholesaler_#{method_type}))
-        chart.add_element(create_distributor_line(distributor_#{method_type}))
-        chart.add_element(create_factory_line(factory_#{method_type}))
-        render :text => chart.to_s
-      end
-    team_plots
+  def show_team_plot
+    method_type = params[:method_type]
+    @graph = open_flash_chart_object(500,300,team_plot_path(params[:id], method_type))
+    render :layout => false
+  end
+  
+  def team_plot
+    @game = Game.find(params[:id])
+    method_type = params[:method_type]    
+    title = plot_title(method_type)
+    
+    x_label_values = []
+    retailer_data = []
+    wholesaler_data = []
+    distributor_data = []
+    factory_data = []
+    (0..@game.current_week-2).to_a.each do |i|
+      retailer_data << @game.roles[1].instance_eval(method_type)[i].amount
+      wholesaler_data << @game.roles[2].instance_eval(method_type)[i].amount
+      distributor_data << @game.roles[3].instance_eval(method_type)[i].amount
+      factory_data << @game.roles[4].instance_eval(method_type)[i].amount
+      x_label_values << (i+1).to_s
+    end  
+  
+    min_y_range = min([min(retailer_data), min(wholesaler_data), min(distributor_data), min(factory_data)])
+    max_y_range = max([max(retailer_data), max(wholesaler_data), max(distributor_data), max(factory_data)])
+    y = YAxis.new
+    y.set_range(min_y_range,max_y_range+100,100)
+    
+    chart = open_flash_chart(Title.new("#{title}"), create_x_axis(x_label_values), y)
+  
+    chart.add_element(create_retailer_line(retailer_data))
+    chart.add_element(create_wholesaler_line(wholesaler_data))
+    chart.add_element(create_distributor_line(distributor_data))
+    chart.add_element(create_factory_line(factory_data))
+    render :text => chart.to_s
   end
   
   def role_plot
@@ -110,68 +108,44 @@ class PlotsController < ApplicationController
      chart
    end
    
+   def create_line text, color, values
+     line = new_line
+     line.text = text
+     line.colour = color
+     line.values = values
+     line
+   end
+   
    def create_cost_history_line values
-     cost_history_line = new_line
-     cost_history_line.text = "成本"
-     cost_history_line.colour = '#31D310'
-     cost_history_line.values = values
-     cost_history_line
+     create_line "成本", '#31D310', values
    end
    
    def create_received_order_line values
-     received_order_line = new_line
-     received_order_line.text = "需求量"
-     received_order_line.colour = '#DFC329'
-     received_order_line.values = values
-     received_order_line
+     create_line "需求量", '#DFC329', values
    end
    
    def create_placed_order_line values
-     placed_order_line = new_line
-     placed_order_line.text = "订货量"
-     placed_order_line.colour = '#6363AC'
-     placed_order_line.values = values
-     placed_order_line
+     create_line "订货量", '#6363AC', values
    end
    
    def create_inventory_history_line values
-     inventory_history_line = new_line
-     inventory_history_line.text = "库存量"
-     inventory_history_line.colour = '#5E4725'
-     inventory_history_line.values = values
-     inventory_history_line
+     create_line "库存量", '#5E4725', values
    end
    
    def create_retailer_line values
-     retailer_line = new_line
-     retailer_line.text = "零售商"
-     retailer_line.colour = '#6363AC'
-     retailer_line.values = values
-     retailer_line
+     create_line "零售商", '#6363AC', values
    end
    
    def create_wholesaler_line values
-     wholesaler_line = new_line
-     wholesaler_line.text = "分销商"
-     wholesaler_line.colour = '#DFC329'
-     wholesaler_line.values = values
-     wholesaler_line
+     create_line "分销商", '#DFC329', values
    end
    
    def create_distributor_line values
-     distributor_line = new_line
-     distributor_line.text = "批发商"
-     distributor_line.colour = '#EF35DA'
-     distributor_line.values = values
-     distributor_line
+     create_line "批发商", '#EF35DA', values
    end
    
    def create_factory_line values
-     factory_line = new_line
-     factory_line.text = "制造商"
-     factory_line.colour = '#5E4725'
-     factory_line.values = values     
-     factory_line
+     create_line "制造商", '#5E4725', values     
    end
    
    def new_line
