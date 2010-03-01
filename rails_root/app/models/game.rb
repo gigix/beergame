@@ -1,6 +1,7 @@
 class Game < ActiveRecord::Base
   MAX_INVENTORY = 1000000
   has_many :roles
+  validates_presence_of :name
   
   def self.create_with_roles(name, role_names)
     game = create!(:name => name, :current_week => 1, :inventory_cost => 0.5, :backorder_cost => 1)

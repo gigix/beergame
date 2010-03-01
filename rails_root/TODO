@@ -25,5 +25,6 @@ AS AN instructor, I WANT TO configure a role in a game with a password, SO THAT 
 vertical scroll bar
 input validation
 ===== Tech tasks ===
+ajax for passing week
 Refactor the tests
 Re-organize the test data with fixtures, so that we never need to call role.reload in the tests any more

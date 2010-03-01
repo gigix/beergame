@@ -30,8 +30,8 @@ class PlotsController < ApplicationController
           x_label_values << (i+1).to_s
         end  
 
-        min_y_range = [retailer_#{method_type}.min, wholesaler_#{method_type}.min, distributor_#{method_type}.min, factory_#{method_type}.min].min
-        max_y_range = [retailer_#{method_type}.max, wholesaler_#{method_type}.max, distributor_#{method_type}.max, factory_#{method_type}.max].max
+        min_y_range = min([min(retailer_#{method_type}), min(wholesaler_#{method_type}), min(distributor_#{method_type}), min(factory_#{method_type})])
+        max_y_range = max([max(retailer_#{method_type}), max(wholesaler_#{method_type}), max(distributor_#{method_type}), max(factory_#{method_type})])
         y = YAxis.new
         y.set_range(min_y_range,max_y_range+100,100)
         
