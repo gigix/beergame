@@ -85,6 +85,16 @@ describe Game do
     end
   end
   
+  describe :gameover? do
+    it 'should not pass week when gameover' do
+      @game.update_attributes(:max_weeks => 1)
+      all_roles_place_order
+      @game.reload
+      @game.gameover?.should == true
+      @game.current_week.should == 1
+    end
+  end
+  
   describe :order_placed do
     
     it 'do not pass current week if order placing not finished' do
@@ -183,4 +193,5 @@ describe Game do
       role.place_order(100)
     }
   end
+
 end

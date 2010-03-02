@@ -8,5 +8,8 @@
 	<p> 
 		欠货成本：<%= game.text_field :backorder_cost %> 
 	</p>
+	<p>
+		共有多少星期：<%= game.text_field :max_weeks %>
+	</p>
 	<p><%= game.submit "提交" %></p>
 <% end%>

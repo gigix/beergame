@@ -12,5 +12,12 @@ describe RolesController do
       assigns(:game).should == @game
       assigns(:role).should == @retailer
     end
+    
+    it 'should be success when game over' do;
+      @game.update_attributes(:max_weeks => 1, :current_week => 1)
+      get :show, :id => @retailer, :game_id => @game
+      response.should be_success
+    end
+    
   end
 end

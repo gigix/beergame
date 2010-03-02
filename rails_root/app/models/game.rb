@@ -4,13 +4,18 @@ class Game < ActiveRecord::Base
   validates_presence_of :name
   
   def self.create_with_roles(name, role_names)
-    game = create!(:name => name, :current_week => 1, :inventory_cost => 0.5, :backorder_cost => 1)
+    game = create!(:name => name, :current_week => 1, :inventory_cost => 0.5, :backorder_cost => 1, :max_weeks => 30)
     Game.create_roles game, role_names
     Game.prepare_for_the_first_week game
   end
   
   def order_placed()
+    return if gameover?
     pass_week if order_placing_finished? 
+  end
+  
+  def gameover?
+    current_week >= max_weeks
   end
   
   private

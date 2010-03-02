@@ -20,27 +20,34 @@
 		</div>
 	<% end%>
 	<div class="order_form">
-		<% if !@role.order_placed? %>
-				<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create') )do |f| %>
-					<% f.fields_for :placed_orders do |order| %>
-						请输入你要向<%= @role.upstream.name %>订货的数量: <%= order.text_field :amount %>
+			<% if !@role.order_placed? %>
+					<% form_for(@role, :url => url_for(:controller => 'orders', :action => 'create') )do |f| %>
+						<% f.fields_for :placed_orders do |order| %>
+							请输入你要向<%= @role.upstream.name %>订货的数量: <%= order.text_field :amount %>
+						<% end %>
+						<%= f.hidden_field :id, :value => @role.id %>
+						<%= f.hidden_field :game_id, :value => @game.id %>
+						<%= f.submit '下订单' %>
 					<% end %>
-					<%= f.hidden_field :id, :value => @role.id %>
-					<%= f.hidden_field :game_id, :value => @game.id %>
-					<%= f.submit '下订单' %>
-				<% end %>
 				<script>
 					order_placed = false;
 					$('role_placed_orders_amount').focus();
 				</script>
-		<% else %>
-			<script>
-				order_placed = true;
-			</script>
-			<%= periodically_call_remote(:condition => 'order_placed == true', 
-				:url => {:action => 'refresh_content', :id => @role}, :update => "role_info") if @need_poll %>
-			<p><span>请等待其他玩家下订单。</span></p>
-		<% end %>
+			<% else %>
+				<% if @game.gameover? %>
+					<script>
+						order_placed = false;
+					</script>
+						游戏结束，你的总成本是：<%= @role.cost_histories.last.amount %>
+				<% else %>
+					<script>
+						order_placed = true;
+					</script>
+					<%= periodically_call_remote(:condition => 'order_placed == true', 
+						:url => {:action => 'refresh_content', :id => @role}, :update => "role_info") if @need_poll %>
+					<p><span>请等待其他玩家下订单。</span></p>			 
+				<% end %>
+			<% end %>
 	</div>
 </div>
 <div class="history">
