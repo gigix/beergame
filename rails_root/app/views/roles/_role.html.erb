@@ -29,12 +29,18 @@
 					<%= f.hidden_field :game_id, :value => @game.id %>
 					<%= f.submit '下订单' %>
 				<% end %>
-			<% else %>
+				<script>
+					order_placed = false;
+					$('role_placed_orders_amount').focus();
+				</script>
+		<% else %>
+			<script>
+				order_placed = true;
+			</script>
+			<%= periodically_call_remote(:condition => 'order_placed == true', 
+				:url => {:action => 'refresh_content', :id => @role}, :update => "role_info") if @need_poll %>
 			<p><span>请等待其他玩家下订单。</span></p>
 		<% end %>
-	</div>
-	<div>
-		<%= link_to "查看统计图表", game_plot_path(@role.game, @role), :rel => "gb_page_center[550, 350]" %>
 	</div>
 </div>
 <div class="history">

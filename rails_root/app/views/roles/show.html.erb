@@ -1,4 +1,8 @@
-<% title @game.name %>
-<%= periodically_call_remote (:url => {:action => 'refresh_content', :id => @role}, :frequency => '1', :update => "content") %>
-<%= render :partial => 'role' %>
+<% title "#{@game.name} | #{@role.name}" %>
+
+<div>
+	<%= link_to "查看统计图表", game_plot_path(@role.game, @role), :rel => "gb_page_center[550, 350]" %>
+</div>
+
+<div id='role_info'><%= render :partial => 'role' %></div>
 

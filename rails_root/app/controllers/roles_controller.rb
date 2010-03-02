@@ -2,15 +2,15 @@ class RolesController < ApplicationController
   def show
     @game = Game.find(params[:game_id])
     @role = @game.roles.find(params[:id])
+    @need_poll = true
   end
   
   def refresh_content
     @role = Role.find(params[:id])
     @game = @role.game
+    @need_poll = false
     
-    render :update do |page|
-      page.replace_html 'content', :partial => "role"
-    end
+    render :partial => "role"
   end
   
   def place_order
