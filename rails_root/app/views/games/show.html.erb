@@ -1,21 +1,26 @@
 <% title @game.name %>
 <h1>游戏名称：<%= @game.name %></h1>
 
+<div class='plots'>
+	<ul>
+	<li>
+		<%= link_to_team_plot "placed_orders" %>
+	</li>
+	<li>
+		<%= link_to_team_plot "received_orders" %>
+	</li>
+	<li>
+		<%= link_to_team_plot "inventory_histories" %>
+	</li>
+	<li>
+		<%= link_to_team_plot "cost_histories" %>
+	</li>
+	</ul>
+</div>
+
 <div>当前是第<%= @game.current_week %>个星期，请单击角色名称以加入游戏</div>
 <ul>
 	<% @game.roles.each do |role| %>
 	<li><%= link_to_play_a_role role %></li>
 	<% end %>
 </ul>
-<div>
-	<%= link_to_team_plot "placed_orders" %>
-</div>
-<div>
-	<%= link_to_team_plot "received_orders" %>
-</div>
-<div>
-	<%= link_to_team_plot "inventory_histories" %>
-</div>
-<div>
-	<%= link_to_team_plot "cost_histories" %>
-</div>

@@ -28,7 +28,7 @@ p {
 
 #content {
 	height:auto !important;
-	margin:0 auto;
+	margin:2em auto;
 	min-height:600px;
 	width: 960px;
 	text-align: left;
@@ -50,6 +50,10 @@ a {
 .basic_information h2{
 	font-size: 1.3em;
 	padding-bottom: 15px;
+}
+
+.basic_information .intro {
+	margin-top: 5em;
 }
 
 .order_form span{
@@ -199,4 +203,9 @@ ul.usernav li {
 #header .logo {
 	float:left;
 	padding-top:20px;
+}
+
+.plots ul li {
+	display: inline;
+	padding-right: 2em;
 }

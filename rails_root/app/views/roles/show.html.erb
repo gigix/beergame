@@ -1,7 +1,9 @@
 <% title "#{@game.name} | #{@role.name}" %>
 
-<div>
-	<%= link_to "查看统计图表", game_plot_path(@role.game, @role), :rel => "gb_page_center[550, 350]" %>
+<div class='plots'>
+	<ul>
+		<li><%= link_to "查看统计图表", game_plot_path(@role.game, @role), :rel => "gb_page_center[550, 350]" %></li>
+	</ul>
 </div>
 
 <div id='role_info'><%= render :partial => 'role' %></div>

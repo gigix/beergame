@@ -49,7 +49,16 @@
 				<% end %>
 			<% end %>
 	</div>
+	
+	<div class='intro'>
+		<h2>游戏说明</h2>
+		<p>你在此游戏中扮演<%= @role.name %>角色</p>
+		<p>你的下游是<%= @role.downstream.name %>，他的订单需要<%= @role.downstream.information_delay || 0 %>周到达你的手上，你的货物需要<%= @role.downstream.shipping_delay || 0 %>周到达他的手上。</p>
+		<p>你的上游是<%= @role.upstream.name %>，你的订单需要<%= @role.information_delay %>周到达他的手上，他的货物需要<%= @role.shipping_delay || 0 %>周到达你的手上。</p>
+	</div>
+
 </div>
+
 <div class="history">
 	<table>
 		<thead>
