@@ -13,6 +13,6 @@ module PlotsHelper
     title = plot_title(method_type)
     link_to "查看#{title}统计图表", 
       {:controller => "plots", :action => "show_team_plot", :id => @game, :method_type => method_type}, 
-      :rel => "gb_page_center[550, 350]"
+      :rel => "gb_page_center[1100, 700]"
   end
 end

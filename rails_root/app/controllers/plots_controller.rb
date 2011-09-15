@@ -2,13 +2,13 @@ class PlotsController < ApplicationController
   include PlotsHelper
   
   def show
-    @graph = open_flash_chart_object(500,300,role_plot_path(params[:id]))
+    @graph = open_flash_chart_object(1000,600,role_plot_path(params[:id]))
     render :layout => false
   end
   
   def show_team_plot
     method_type = params[:method_type]
-    @graph = open_flash_chart_object(500,300,team_plot_path(params[:id], method_type))
+    @graph = open_flash_chart_object(1000,600,team_plot_path(params[:id], method_type))
     render :layout => false
   end
   
