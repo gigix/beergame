@@ -18,22 +18,16 @@ class PlotsController < ApplicationController
     title = plot_title(method_type)
     
     x_label_values = []
-    (1..@game.roles.length-2).each{ |i|
-      instance_eval %Q{
-       #{@game.roles[i].english_name}_data=[] 
-      }
-    }
-    (0..@game.current_week-2).to_a.each do |week|
-      (1..@game.roles.length-2).each{ |i|
-        instance_eval %Q{
-         #{@game.roles[i].english_name}_data << @game.roles[i].instance_eval(method_type)[week].amount
-        }
-      }
+    retailer_data = []
+    wholesaler_data = []
+    distributor_data = []
+    factory_data = []
+    (0..@game.current_week-2).to_a.each do |i|
       retailer_data << @game.roles[1].instance_eval(method_type)[i].amount
       wholesaler_data << @game.roles[2].instance_eval(method_type)[i].amount
       distributor_data << @game.roles[3].instance_eval(method_type)[i].amount
       factory_data << @game.roles[4].instance_eval(method_type)[i].amount
-      x_label_values << (week+1).to_s
+      x_label_values << (i+1).to_s
     end  
   
     min_y_range = min([min(retailer_data), min(wholesaler_data), min(distributor_data), min(factory_data)])
