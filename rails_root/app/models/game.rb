@@ -20,9 +20,10 @@ class Game < ActiveRecord::Base
   
   private
   def self.create_roles game,role_names
-    last_role = game.roles.create!(:name => '顾客')
-    role_names.push('工厂').each do |role_name| 
-      upper_role = game.roles.create!(:name => role_name, :playable => true, :information_delay => 2, :shipping_delay => 2, :inventory => 12)
+    last_role = game.roles.create!(:name => '顾客', :english_name => 'consumer')
+    role_names['工厂' => 'brewery']
+    role_names.each do |role_name, role_english_name| 
+      upper_role = game.roles.create!(:name => role_name, :english_name => role_english_name, :playable => true, :information_delay => 2, :shipping_delay => 2, :inventory => 12)
       last_role.update_attributes(:upstream => upper_role)
       last_role = upper_role
     end
