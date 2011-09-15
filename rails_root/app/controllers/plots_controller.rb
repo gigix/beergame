@@ -1,5 +1,6 @@
 class PlotsController < ApplicationController
   include PlotsHelper
+  @@colors = ['#31D310', '#6363AC', '#DFC329', '#5E4725']
   
   def show
     @graph = open_flash_chart_object(1000,600,role_plot_path(params[:id]))
@@ -17,56 +18,52 @@ class PlotsController < ApplicationController
     method_type = params[:method_type]    
     title = plot_title(method_type)
     
-    x_label_values = []
-    retailer_data = []
-    wholesaler_data = []
-    distributor_data = []
-    factory_data = []
-    (0..@game.current_week-2).to_a.each do |i|
-      retailer_data << @game.roles[1].instance_eval(method_type)[i].amount
-      wholesaler_data << @game.roles[2].instance_eval(method_type)[i].amount
-      distributor_data << @game.roles[3].instance_eval(method_type)[i].amount
-      factory_data << @game.roles[4].instance_eval(method_type)[i].amount
-      x_label_values << (i+1).to_s
+    for_each_playable_role { |role_index|
+      instance_variable_set("@#{@game.roles[role_index].english_name}", [])
+    }
+
+    (0..@game.current_week-2).to_a.each do |week|
+      for_each_playable_role{ |role_index|
+        data_of_role(role_index) << @game.roles[role_index].instance_eval(method_type)[week].amount
+      }
     end  
   
-    min_y_range = min([min(retailer_data), min(wholesaler_data), min(distributor_data), min(factory_data)])
-    max_y_range = max([max(retailer_data), max(wholesaler_data), max(distributor_data), max(factory_data)])
-    y = YAxis.new
-    y.set_range(min_y_range,max_y_range+100,100)
+    y_axis = YAxis.new    
+    y_axis.set_range(min(data_of_roles), max(data_of_roles)+100, 100)
     
-    chart = open_flash_chart(Title.new("#{title}"), create_x_axis(x_label_values), y)
-  
-    chart.add_element(create_retailer_line(retailer_data))
-    chart.add_element(create_wholesaler_line(wholesaler_data))
-    chart.add_element(create_distributor_line(distributor_data))
-    chart.add_element(create_factory_line(factory_data))
+    chart = open_flash_chart(Title.new("#{title}"), create_x_axis(populate_x_label_values(@game)), y_axis)
+    
+    (1..@game.roles.length-2).each{ |role_index|
+       chart.add_element(
+          create_line("#{@game.roles[role_index].name}", @@colors[role_index-1], data_of_role(role_index))
+       )
+    }
+    
     render :text => chart.to_s
   end
   
   def role_plot
      @role = Role.find(params[:id])
-
-     x_label_values = []
+     
      received_orders = []
      placed_orders = []
      inventory_histories = []
      cost_histories = []
+     
      (0..@role.game.current_week-2).to_a.each do |i|
        received_orders << @role.received_orders[i].amount
        placed_amount = @role.placed_orders[i].nil?? 0 : @role.placed_orders[i].amount
        placed_orders << placed_amount
        inventory_histories << @role.inventory_histories[i].amount 
        cost_histories << @role.cost_histories[i].amount
-       x_label_values << (i+1).to_s
      end
      
-     min_y_range = min([min(placed_orders), min(received_orders), min(inventory_histories)])
-     max_y_range = max([max(placed_orders), max(received_orders), max(inventory_histories)])
-     y = YAxis.new
-     y.set_range(min_y_range,max_y_range+100,100)
+     y_axis = YAxis.new
+     min_y_range = min([placed_orders, received_orders, inventory_histories])
+     max_y_range = max([placed_orders, received_orders, inventory_histories])
+     y_axis.set_range(min_y_range,max_y_range+100,100)
      
-     chart = open_flash_chart(Title.new("统计图：游戏#{@role.game.name}，角色#{@role.name}"), create_x_axis(x_label_values), y)
+     chart = open_flash_chart(Title.new("统计图：游戏#{@role.game.name}，角色#{@role.name}"), create_x_axis(populate_x_label_values(@role.game)), y_axis)
 
      chart.add_element(create_placed_order_line(placed_orders))
      chart.add_element(create_received_order_line(received_orders))
@@ -77,12 +74,37 @@ class PlotsController < ApplicationController
    end
 
    private
-   def min(arr)
-     arr.min rescue 0
+   
+   def populate_x_label_values game
+     x_label_values = []
+     (0..game.current_week-1).to_a.each do |week|
+       x_label_values << (week).to_s
+     end
+     x_label_values
    end
    
-   def max(arr)
-     arr.max rescue 0
+   def data_of_roles
+     (1..@game.roles.length-2).map{|role_index|
+       data_of_role(role_index)
+     }
+   end
+
+   def data_of_role role_index
+     instance_variable_get("@#{@game.roles[role_index].english_name}")
+   end
+   
+   def min(array_of_array)
+     array_of_array.map{|array| array.min }.min rescue 0
+   end
+   
+   def max(array_of_array)
+     array_of_array.map{|array| array.max }.max rescue 0
+   end
+   
+   def for_each_playable_role &block
+     (1..@game.roles.length-2).each{ |role_index|
+       yield role_index
+     }
    end
    
    def create_x_axis x_label_values
@@ -107,14 +129,7 @@ class PlotsController < ApplicationController
      chart.y_axis = y_axis
      chart
    end
-   
-   def create_line text, color, values
-     line = new_line
-     line.text = text
-     line.colour = color
-     line.values = values
-     line
-   end
+
    
    def create_cost_history_line values
      create_line "成本", '#31D310', values
@@ -132,20 +147,12 @@ class PlotsController < ApplicationController
      create_line "库存量", '#5E4725', values
    end
    
-   def create_retailer_line values
-     create_line "零售商", '#6363AC', values
-   end
-   
-   def create_wholesaler_line values
-     create_line "分销商", '#DFC329', values
-   end
-   
-   def create_distributor_line values
-     create_line "批发商", '#EF35DA', values
-   end
-   
-   def create_factory_line values
-     create_line "制造商", '#5E4725', values     
+   def create_line text, color, values
+     line = new_line
+     line.text = text
+     line.colour = color
+     line.values = values
+     line
    end
    
    def new_line

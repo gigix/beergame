@@ -50,7 +50,7 @@ module PreparedGame
   def PreparedGame.included(base)
       base.class_eval do
         before(:each) do
-          @game = Game.create_with_roles('test_game', ['零售商' => 'retailer', '分销商' => 'wholesaler', '批发商' => 'distributor', '制造商' => 'factory'])
+          @game = Game.create_with_roles('test_game', [{'零售商' => 'retailer'}, {'分销商' => 'wholesaler'}, {'批发商' => 'distributor'}, {'制造商' => 'factory'}])
           @consumer, @retailer, @wholesaler, @distributor, @factory, @brewery = @game.roles
         end
       end
